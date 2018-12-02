@@ -19,6 +19,9 @@
 		 return key; 
 	 }
 	 
+	 /*
+	  * returns value or null if external leaf
+	  */
 	 public String getValue() {
 		 return rank == -1 ? null : value;  
 	 }
