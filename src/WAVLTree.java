@@ -123,7 +123,8 @@ public class WAVLTree {
    {
            return null;
    }
-     /**
+
+   /**
     * public int select(int i)
     *
     * Returns the value of the i'th smallest key (return -1 if tree is empty)
@@ -136,4 +137,54 @@ public class WAVLTree {
    {
            return null; 
    }
+   
+   /**
+    * public class WAVLNode
+   */
+   public class WAVLNode {
+  	 
+  	 private int rank; 
+  	 private int key; 
+  	 private int size; 
+  	 private String value; 
+  	 private WAVLNode left; 
+  	 private WAVLNode parent; 
+  	 private WAVLNode right; 
+  	 
+  	 public WAVLNode() {
+  		 
+  	 }
+  	
+  	 public int getKey() {
+  		 return key; 
+  	 }
+  	 
+  	 /*
+  	  * returns value or null if external leaf
+  	  */
+  	 public String getValue() {
+  		 return rank == -1 ? null : value;  
+  	 }
+  	 
+  	 public WAVLNode getLeft() {
+  		 return left; 
+  	 }
+  	 
+  	 public WAVLNode getParent( ) {
+  		 return parent; 
+  	 }
+  	 
+  	 public WAVLNode getRight() {
+  		 return right; 
+  	 }
+  	 
+  	 public boolean isInnerNode() {
+  		 return rank != -1 ? true : false; 
+  	 }
+
+       public int getSubtreeSize() {
+      	 return size; 
+       }
+       
+    }
 }
