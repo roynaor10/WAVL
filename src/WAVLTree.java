@@ -8,6 +8,9 @@
  */
 
 public class WAVLTree {
+	
+	private WAVLNode root;
+	private final WAVLNode EXT=new WAVLNode(-1,null); //general object used as external leaf
 
   /**
    * public boolean empty()
@@ -16,7 +19,7 @@ public class WAVLTree {
    *
    */
   public boolean empty() {
-    return false; // to be replaced by student code
+	  return root==null;
   }
 
  /**
@@ -27,9 +30,45 @@ public class WAVLTree {
    */
   public String search(int k)
   {
-        return "42";  // to be replaced by student code
+	  return treeSearch(k, root);
   }
-
+  
+  /**
+   * search for subtree as shown in class
+   */
+  private String treeSearch(int k,WAVLNode current) { 
+	  while (current!=null) {
+		if (k==current.key) return current.value;
+		else {
+			if(k<current.key) current=current.left;
+			else current=current.right;
+		}
+	}
+        return null;
+  }
+  
+  /**
+   * finds insertion point in subtree.
+   * Returns insertion position if not in tree, or the node with insertion key 
+   * if already in tree. returns null if tree is empty.
+   */
+  private WAVLNode treePosition(int k,WAVLNode inserted) {
+	  WAVLNode prev=null;
+	  while (inserted!=null) {
+		prev=inserted;
+		if(k==inserted.key) return inserted;
+		else {
+			if(k<inserted.key) inserted=inserted.left;
+			else inserted=inserted.right;
+		}
+	}
+	  return prev;
+  }
+  
+  
+  //TODO successor (22)?
+  
+  
   /**
    * public int insert(int k, String i)
    *
@@ -55,6 +94,27 @@ public class WAVLTree {
            return 42;   // to be replaced by student code
    }
 
+   /**
+    * rotates tree right as shown in class
+    * makes y the axis, x=y.left , and B=x.left .
+    * updates sizes.
+    * @param x rotation axis, where y=x.left and B=y.right
+    * for reference see BST slide 31
+    */
+   private void rightRotate(WAVLNode x) {
+	   WAVLNode y=x.left;
+	   WAVLNode B=y.right;
+	   
+	   y.parent=x.parent;
+	   y.right=x;
+	   x.parent=y;
+	   x.left=B;
+	   B.parent=x;
+	   
+	   x.size=x.left.size+x.right.size+1; //only x,y sizes changed- so we can use unchanged sizes
+	   y.size=y.left.size+y.right.size+1; //y relies on x size- important to update it first
+   }
+   
    /**
     * public String min()
     *
@@ -110,7 +170,7 @@ public class WAVLTree {
     */
    public int size()
    {
-           return 42; // to be replaced by student code
+           return root.size; // to be replaced by student code
    }
    
      /**
@@ -121,7 +181,7 @@ public class WAVLTree {
     */
    public WAVLNode getRoot()
    {
-           return null;
+           return root;
    }
 
    /**
@@ -155,6 +215,11 @@ public class WAVLTree {
   		 
   	 }
   	
+  	 public WAVLNode(int key,String value) { //added constructor with arguments
+  		 this.key=key;
+  		 this.value=value;
+  	 }
+  	 
   	 public int getKey() {
   		 return key; 
   	 }
