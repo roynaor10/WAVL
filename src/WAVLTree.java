@@ -3,14 +3,14 @@
  * WAVLTree
  *
  * An implementation of a WAVL Tree.
- * (Haupler, Sen & Tarajan ‘15)
+ * (Haupler, Sen & Tarajan â€˜15)
  *
  */
 
 public class WAVLTree {
 	
 	private WAVLNode root;
-	private final WAVLNode EXT=new WAVLNode(-1,null); //general object used as external leaf
+	private final WAVLNode EXT = new WAVLNode(-1, null); //general object used as external leaf
 
   /**
    * public boolean empty()
@@ -19,7 +19,7 @@ public class WAVLTree {
    *
    */
   public boolean empty() {
-	  return root==null;
+	  return root == null;
   }
 
  /**
@@ -28,22 +28,27 @@ public class WAVLTree {
    * returns the info of an item with key k if it exists in the tree
    * otherwise, returns null
    */
-  public String search(int k)
-  {
+  public String search(int k) {
 	  return treeSearch(k, root);
   }
   
   /**
    * search for subtree as shown in class
    */
-  private String treeSearch(int k,WAVLNode current) { 
-	  while (current!=null) {
-		if (k==current.key) return current.value;
-		else {
-			if(k<current.key) current=current.left;
-			else current=current.right;
+  private String treeSearch(int k, WAVLNode current) { 
+	  while (current != null) {
+		if (k == current.key) {
+			return current.value; 
 		}
-	}
+		else {
+			if (k < current.key) {
+				current = current.left; 
+			}
+			else {
+				current = current.right;
+			}
+		}
+	} 
         return null;
   }
   
@@ -53,13 +58,19 @@ public class WAVLTree {
    * if already in tree. returns null if tree is empty.
    */
   private WAVLNode treePosition(int k,WAVLNode inserted) {
-	  WAVLNode prev=null;
-	  while (inserted!=null) {
-		prev=inserted;
-		if(k==inserted.key) return inserted;
+	  WAVLNode prev = null;
+	  while (inserted != null) {
+		prev = inserted;
+		if (k == inserted.key) {
+			return inserted;
+		}
 		else {
-			if(k<inserted.key) inserted=inserted.left;
-			else inserted=inserted.right;
+			if (k < inserted.key) {
+				inserted = inserted.left;
+			}
+			else {
+				inserted = inserted.right;
+			}
 		}
 	}
 	  return prev;
@@ -89,8 +100,7 @@ public class WAVLTree {
    * returns the number of rebalancing operations, or 0 if no rebalancing operations were needed.
    * returns -1 if an item with key k was not found in the tree.
    */
-   public int delete(int k)
-   {
+   public int delete(int k) {
            return 42;   // to be replaced by student code
    }
 
@@ -121,10 +131,19 @@ public class WAVLTree {
     * Returns the info of the item with the smallest key in the tree,
     * or null if the tree is empty
     */
-   public String min()
-   {
-           return "42"; // to be replaced by student code
+   public String min() { // Bottom - Left 
+	   return minNode(root).getValue(); 
    }
+   
+   public WAVLNode minNode(WAVLNode root) {
+	   if (root == null) {
+		   return null; 
+	   }
+	   while (root.getLeft() != null) {
+		   root = root.getLeft(); 
+	   }
+	   return root;  
+   } 
 
    /**
     * public String max()
@@ -132,9 +151,18 @@ public class WAVLTree {
     * Returns the info of the item with the largest key in the tree,
     * or null if the tree is empty
     */
-   public String max()
-   {
-           return "42"; // to be replaced by student code
+   public String max() { // Bottom - Right  
+	   return maxNode(root).getValue(); 
+   }
+   
+   public WAVLNode maxNode(WAVLNode root) { 
+	   if (root == null) {
+		   return null; 
+	   }
+	   while (root.getRight() != null) {
+		   root = root.getRight(); 
+	   }
+	   return root;  
    }
 
    /**
@@ -143,10 +171,21 @@ public class WAVLTree {
    * Returns a sorted array which contains all keys in the tree,
    * or an empty array if the tree is empty.
    */
-   public int[] keysToArray()
-   {
-        int[] arr = new int[42]; // to be replaced by student code
-        return arr;              // to be replaced by student code
+   public int[] keysToArray() {
+	   int[] keys = new int[size()]; 
+	   WAVLNode temp = root; 
+	   keysInOrder(temp, keys, 0); 
+	   return keys; 
+   }
+   
+   private int keysInOrder(WAVLNode temp, int[] arr, int i) {
+	   if (temp == null) {
+			return i;
+	   }
+	   i = keysInOrder(temp.getLeft(), arr, i);
+	   arr[i++] = temp.getKey();
+	   i = keysInOrder(temp.getRight(), arr, i);
+	   return i; 
    }
 
    /**
@@ -156,11 +195,22 @@ public class WAVLTree {
    * sorted by their respective keys,
    * or an empty array if the tree is empty.
    */
-   public String[] infoToArray()
-   {
-        String[] arr = new String[42]; // to be replaced by student code
-        return arr;                    // to be replaced by student code
+   public String[] infoToArray() {
+	   String[] info = new String[size()]; 
+	   WAVLNode temp = root; 
+	   infoInOrder(temp, info, 0); 
+	   return info;  
    }
+    
+   private int infoInOrder(WAVLNode temp, String[] arr, int i) {
+	if (temp == null) {
+		return i;
+	}
+	i = infoInOrder(temp.getLeft(), arr, i);
+	arr[i++] = temp.getValue();
+	i = infoInOrder(temp.getRight(), arr, i);
+	return i;
+	}
 
    /**
     * public int size()
@@ -168,8 +218,7 @@ public class WAVLTree {
     * Returns the number of nodes in the tree.
     *
     */
-   public int size()
-   {
+   public int size() {
            return root.size; // to be replaced by student code
    }
    
@@ -179,8 +228,7 @@ public class WAVLTree {
     * Returns the root WAVL node, or null if the tree is empty
     *
     */
-   public WAVLNode getRoot()
-   {
+   public WAVLNode getRoot() {
            return root;
    }
 
@@ -193,9 +241,8 @@ public class WAVLTree {
         * Example 3: select(2) returns the value 2nd smallest minimal node, i.e the value of the node minimal node's successor  
     *
     */   
-   public String select(int i)
-   {
-           return null; 
+   public String select(int i) {
+	   return infoToArray()[i]; 
    }
    
    /**
