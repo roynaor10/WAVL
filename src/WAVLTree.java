@@ -11,6 +11,9 @@ public class WAVLTree {
 	
 	private WAVLNode root;
 	private final WAVLNode EXT = new WAVLNode(-1, null); //general object used as external leaf
+	
+	//TODO many methods use ==null: is it problematic with EXT?  notice ranks>=0 
+	//TODO use get() and ignore EXT
 
   /**
    * public boolean empty()
@@ -76,9 +79,23 @@ public class WAVLTree {
 	  return prev;
   }
   
-  
-  //TODO successor (22)?
-  
+  /**
+   * returns the node with the next key by value in the tree (such the kry is the minimal key that satisfies key>x.key)
+   * implementation identical to one shown in class
+   */
+  private WAVLNode successor(WAVLNode x) {
+	  if (x.right!=null) return minNode(x);
+	  
+	  WAVLNode y=x.parent;
+	  
+	  while(y!=null && x== y.right) {
+		  x=y;
+		  y=x.parent;
+	  }
+	  
+	  return y;
+
+  }
   
   /**
    * public int insert(int k, String i)
@@ -106,11 +123,11 @@ public class WAVLTree {
 
    /**
     * rotates tree right as shown in class
-    * makes y the axis, x=y.left , and B=x.left .
+    * makes y the axis, x=y.right , and B=x.left .
     * updates sizes.
     * @param x rotation axis, where y=x.left and B=y.right
     * for reference see BST slide 31
-    * TODO update ranks?
+    * rank update done separately
     */
    private void rightRotate(WAVLNode x) {
 	   WAVLNode y=x.left;
@@ -124,6 +141,28 @@ public class WAVLTree {
 	   
 	   x.size=x.left.size+x.right.size+1; //only x,y sizes changed- so we can use unchanged sizes
 	   y.size=y.left.size+y.right.size+1; //y relies on x size- important to update it first
+   }
+   
+   /**
+    * rotates tree left
+    * makes x the axis, x=y.right , and B=x.left .
+    * updates sizes.
+    * @param y rotation axis, where y=x.left and B=y.right
+    * for reference see BST slide 31
+    * rank update done separately
+    */
+   private void leftRotate(WAVLNode y) {
+	   WAVLNode x=y.right;
+	   WAVLNode B=x.left;
+	   
+	   x.parent=y.parent;
+	   x.left=y;
+	   y.parent=x;
+	   y.right=B;
+	   B.parent=y;
+	   
+	   y.size=y.left.size+y.right.size+1; //only x,y sizes changed- so we can use unchanged sizes
+	   x.size=x.left.size+x.right.size+1; //x relies on y size- important to update it first
    }
    
    /**
