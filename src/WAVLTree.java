@@ -110,6 +110,7 @@ public class WAVLTree {
     * updates sizes.
     * @param x rotation axis, where y=x.left and B=y.right
     * for reference see BST slide 31
+    * TODO update ranks?
     */
    private void rightRotate(WAVLNode x) {
 	   WAVLNode y=x.left;
@@ -170,6 +171,7 @@ public class WAVLTree {
    *
    * Returns a sorted array which contains all keys in the tree,
    * or an empty array if the tree is empty.
+   * implemented using  inorder recursion.
    */
    public int[] keysToArray() {
 	   int[] keys = new int[size()]; 
@@ -178,7 +180,8 @@ public class WAVLTree {
 	   return keys; 
    }
    
-   private int keysInOrder(WAVLNode temp, int[] arr, int i) {
+ //traverses tree in order using recursion and keeps current index to insert to
+   private int keysInOrder(WAVLNode temp, int[] arr, int i) { 
 	   if (temp == null) {
 			return i;
 	   }
@@ -194,6 +197,7 @@ public class WAVLTree {
    * Returns an array which contains all info in the tree,
    * sorted by their respective keys,
    * or an empty array if the tree is empty.
+   * implemented using  inorder recursion.
    */
    public String[] infoToArray() {
 	   String[] info = new String[size()]; 
@@ -202,6 +206,7 @@ public class WAVLTree {
 	   return info;  
    }
     
+ //traverses tree in order using recursion and keeps current index to insert to
    private int infoInOrder(WAVLNode temp, String[] arr, int i) {
 	if (temp == null) {
 		return i;
@@ -219,7 +224,7 @@ public class WAVLTree {
     *
     */
    public int size() {
-           return root.size; // to be replaced by student code
+           return root.size; 
    }
    
      /**
@@ -239,7 +244,7 @@ public class WAVLTree {
     * Example 1: select(1) returns the value of the node with minimal key 
         * Example 2: select(size()) returns the value of the node with maximal key 
         * Example 3: select(2) returns the value 2nd smallest minimal node, i.e the value of the node minimal node's successor  
-    *
+    * TODO change? may need to implement in O(log(n))
     */   
    public String select(int i) {
 	   return infoToArray()[i]; 
