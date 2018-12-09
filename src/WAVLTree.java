@@ -100,7 +100,6 @@ public class WAVLTree {
     * updates sizes.
     * @param x rotation axis, where y=x.left and B=y.right
     * for reference see BST slide 31
-    * TODO ranks?
     */
    private void rightRotate(WAVLNode x) {
 	   WAVLNode y=x.left;
