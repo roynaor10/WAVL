@@ -267,9 +267,10 @@ public class WAVLTree {
    private void rightRotate(WAVLNode x) {
 	   WAVLNode y=x.left;
 	   WAVLNode B=y.right;
+	   System.out.println(x.key);
 	   
-	   if(y!=root && y.parent.left==y) y.parent.left=x; //fix upper tree connection
-	   else if(y!=root && y.parent.right==y) y.parent.right=x;
+	   if(x!=root && x.parent.left==x) x.parent.left=y; //fix upper tree connection
+	   else if(x!=root && x.parent.right==x) x.parent.right=y;
 	   
 	   y.parent=x.parent;
 	   y.right=x;

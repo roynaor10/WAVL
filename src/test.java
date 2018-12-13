@@ -4,6 +4,8 @@ public class test {
 
 	public static void main(String[] args) {
 		WAVLTree wTree=new WAVLTree();
+
+
 		wTree.insert(5, "5"); 
 		wTree.insert(4, "4"); 
 		wTree.insert(3, "3"); 
