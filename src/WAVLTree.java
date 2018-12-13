@@ -12,8 +12,6 @@ public class WAVLTree {
 	private WAVLNode root;
 	private final WAVLNode EXT = new WAVLNode(-1, null); //general object used as external leaf
 	
-	//TODO many methods use ==null: is it problematic with EXT?  notice ranks>=0 
-	//TODO use get() and ignore EXT
 
   /**
    * public boolean empty()
@@ -45,10 +43,10 @@ public class WAVLTree {
 		}
 		else {
 			if (k < current.key) {
-				current = current.left; 
+				current = current.getLeft(); 
 			}
 			else {
-				current = current.right;
+				current = current.getRight();
 			}
 		}
 	} 
@@ -69,10 +67,10 @@ public class WAVLTree {
 		}
 		else {
 			if (k < inserted.key) {
-				inserted = inserted.left;
+				inserted = inserted.getLeft();
 			}
 			else {
-				inserted = inserted.right;
+				inserted = inserted.getRight();
 			}
 		}
 	}
@@ -80,15 +78,15 @@ public class WAVLTree {
   }
   
   /**
-   * returns the node with the next key by value in the tree (such the kry is the minimal key that satisfies key>x.key)
+   * returns the node with the next key by value in the tree (such that the key is the minimal key that satisfies key>x.key)
    * implementation identical to one shown in class
    */
   private WAVLNode successor(WAVLNode x) {
-	  if (x.right!=null) return minNode(x);
+	  if (x.getRight()!=null) return minNode(x);
 	  
 	  WAVLNode y=x.parent;
 	  
-	  while(y!=null && x== y.right) {
+	  while(y!=null && x== y.getRight()) {
 		  x=y;
 		  y=x.parent;
 	  }
@@ -283,9 +281,8 @@ public class WAVLTree {
     * Example 1: select(1) returns the value of the node with minimal key 
         * Example 2: select(size()) returns the value of the node with maximal key 
         * Example 3: select(2) returns the value 2nd smallest minimal node, i.e the value of the node minimal node's successor  
-    * TODO change? may need to implement in O(log(n))
     */   
-   public String select(int i) {
+   public String select(int i) { //    * TODO change? may need to implement in O(log(n))
 	   return infoToArray()[i]; 
    }
    
@@ -323,6 +320,7 @@ public class WAVLTree {
   	 }
   	 
   	 public WAVLNode getLeft() {
+  		 if(this.left==EXT) return null;
   		 return left; 
   	 }
   	 
@@ -331,6 +329,7 @@ public class WAVLTree {
   	 }
   	 
   	 public WAVLNode getRight() {
+  		 if(this.right==EXT) return null;
   		 return right; 
   	 }
   	 
