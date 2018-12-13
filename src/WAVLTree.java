@@ -11,6 +11,7 @@ public class WAVLTree {
 	
 	private WAVLNode root;
 	private final WAVLNode EXT = new WAVLNode(-1, null); //general object used as external leaf
+	private final int ERROR_INDICTATOR=-1;
 	
 
   /**
@@ -58,22 +59,23 @@ public class WAVLTree {
    * Returns insertion position if not in tree, or the node with insertion key 
    * if already in tree. returns null if tree is empty.
    */
-  private WAVLNode treePosition(int k,WAVLNode inserted) {
+  private WAVLNode treePosition(int k,WAVLNode searched) {
 	  WAVLNode prev = null;
-	  while (inserted != null) {
-		prev = inserted;
-		if (k == inserted.key) {
-			return inserted;
+	  while (searched != null) {
+		prev = searched;
+		if (k == searched.key) {
+			return searched;
 		}
 		else {
-			if (k < inserted.key) {
-				inserted = inserted.getLeft();
+			if (k < searched.key) {
+				searched = searched.getLeft();
 			}
 			else {
-				inserted = inserted.getRight();
+				searched = searched.getRight();
 			}
 		}
 	}
+	  System.out.println(prev.key);
 	  return prev;
   }
   
@@ -104,9 +106,135 @@ public class WAVLTree {
    * returns -1 if an item with key k already exists in the tree.
    */
    public int insert(int k, String i) {
-          return 42;    // to be replaced by student code
+	   
+	   if(root==null) {
+		   initializeRoot(k, i); //base case
+		   return 0;
+	   }
+	   
+	   //insertion
+	   
+	   WAVLNode insertionNode=new WAVLNode(k,i);
+	   insertionNode.rank=0;
+	   insertionNode.left=EXT;
+	   insertionNode.right=EXT;
+	   WAVLNode parentNode=treePosition(k, root);
+	   if (parentNode.key==insertionNode.key) {
+		   return ERROR_INDICTATOR; //for error: key in tree
+	   }
+	   if(parentNode.key>insertionNode.key) {
+		   parentNode.left=insertionNode;
+		   insertionNode.parent=parentNode;
+	   }
+	   else { //parentNode.key<insertionNode.key
+		   parentNode.right=insertionNode;
+		   insertionNode.parent=parentNode;
+	   }
+	   
+	   //rebalance
+	   int rebalances=0;
+	   WAVLNode temp=insertionNode;
+	   int caseNum=whichCase(temp);
+	   while (caseNum!=0) {
+		   switch (caseNum) {
+		case 1:
+			temp.parent.rank++;  //promote x
+			temp=temp.parent; 
+			rebalances++;
+			if (temp.parent==null) {
+				caseNum=0; 
+				break; 
+			}
+			caseNum=whichCase(temp);
+			break;
+		case 2:
+			if(temp.parent.left==temp) {
+				rightRotate(temp.parent);
+				temp.right.rank--; //demote z
+			}
+			else { //symmetric
+				leftRotate(temp.parent);
+				temp.left.rank--; //demote z
+			}
+			rebalances+=2;
+			caseNum=0; 
+			break; 
+		case 3:
+			if (temp.parent.left==temp) {
+				leftRotate(temp);
+				rightRotate(temp.parent.parent);
+				temp.rank--; //demote x
+				temp.parent.right.rank--; //demote z
+				temp.parent.rank++; //promote b
+			}
+			else {
+				rightRotate(temp);
+				leftRotate(temp.parent.parent);
+				temp.rank--; //demote x
+				temp.parent.left.rank--; //demote z
+				temp.parent.rank++; //promote b
+			}
+			rebalances+=5;
+			caseNum=0; 
+			break; 
+		} //switch ends  
+	   }
+	   root.size++; //TODO sizes properly
+	   return rebalances;
    }
+   
+   private void initializeRoot(int k, String i) {
+	   root=new WAVLNode(k,i);
+	   root.size=1;
+	   root.rank=0;
+	   root.left=EXT;
+	   root.right=EXT;
+}
 
+   //TODO might very well crash - check thoroughly
+   private int whichCase(WAVLNode currentNode) { //0=fine, 1,2,3=case according to lecture
+	   int diff1 = currentNode.parent.getRank() - currentNode.getRank(); //z
+	   if(diff1!=0) return 0;
+	   int diff2 = currentNode.parent.getRank() - currentNode.getSibling().getRank(); //z-y
+	   if (diff2==1) return 1;
+	   int diff3=currentNode.getRank()-currentNode.left.getRank();
+	   if(currentNode.parent.left==currentNode && diff3==1) return 2;
+	   if(currentNode.parent.right==currentNode && diff3==2) return 2;
+	   return 3;
+   }
+   
+   /*
+    * old code
+   private boolean case1(WAVLNode currentNode) {
+	   int diff1 = currentNode.parent.rank - currentNode.rank; 
+	   int diff2 = currentNode.parent.rank - currentNode.parent.getSibling().rank;
+	   return diff1 == 0 && diff2 == 1;  
+   }
+   
+   private boolean case2(WAVLNode currentNode) {
+	   boolean case2A = false;
+	   boolean case2B = false; 
+	   int diff1 = currentNode.rank - currentNode.left.rank; 
+	   int diff2 = currentNode.rank - currentNode.right.rank; 	   
+	   if (!(diff1 == 1 && diff2 == 2)) { // condition for case 2A
+		   
+	   }
+	   
+	   if (!(diff2 == 2 && diff1 == 1)) { // condition for case 2B
+		   
+	   }
+		   
+		   
+		   return false; 
+	   diff1 = currentNode.parent.rank - currentNode.rank; 
+	   diff2 = currentNode.parent.right.rank - currentNode.parent.rank; 
+	   return diff1 == 0 && diff2 == 2; 
+   }
+   */
+
+   
+
+   
    /**
    * public int delete(int k)
    *
@@ -211,7 +339,7 @@ public class WAVLTree {
    * implemented using  inorder recursion.
    */
    public int[] keysToArray() {
-	   int[] keys = new int[size()]; 
+	   int[] keys = new int[size()];
 	   WAVLNode temp = root; 
 	   keysInOrder(temp, keys, 0); 
 	   return keys; 
@@ -223,7 +351,7 @@ public class WAVLTree {
 			return i;
 	   }
 	   i = keysInOrder(temp.getLeft(), arr, i);
-	   arr[i++] = temp.getKey();
+	   arr[i++] = temp.getKey(); 
 	   i = keysInOrder(temp.getRight(), arr, i);
 	   return i; 
    }
@@ -340,6 +468,18 @@ public class WAVLTree {
        public int getSubtreeSize() {
       	 return size; 
        }
+       
+       public int getRank() { //to access EXT rank
+		if(this==EXT) return -1;
+		return rank;
+	}
+       
+       public WAVLNode getSibling() {
+		if (this.parent.right==this) { //checks if right child and returns left and vice versa
+			return parent.left;
+		}
+		return parent.right;
+	}
        
     }
 }
