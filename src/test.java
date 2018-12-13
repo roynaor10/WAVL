@@ -4,19 +4,13 @@ public class test {
 
 	public static void main(String[] args) {
 		WAVLTree wTree=new WAVLTree();
-		wTree.insert(20, "please work"); 
-		wTree.insert(5, "there"); 
-		wTree.insert(10, "hello"); 
-		wTree.insert(15, "ther6e"); 
-		wTree.insert(30, "there"); 
-		wTree.insert(25, "there"); 
-		wTree.insert(35, "there"); 
-
+		wTree.insert(5, "5"); 
+		wTree.insert(4, "4"); 
+		wTree.insert(3, "3"); 
+		wTree.insert(2, "2"); 
+		wTree.insert(1, "1"); 	
 		System.out.println(wTree.size());
 		System.out.println(Arrays.toString(wTree.keysToArray()));
-		//System.out.println(wTree.getRoot().getKey());
-		System.out.println(wTree.getRoot().getRight().getRight().getKey());
-
+		System.out.println(Arrays.toString(wTree.infoToArray())); 
 	}
-
 }
