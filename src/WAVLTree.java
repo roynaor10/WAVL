@@ -75,7 +75,6 @@ public class WAVLTree {
 			}
 		}
 	}
-	  System.out.println(prev.key);
 	  return prev;
   }
   
@@ -141,7 +140,7 @@ public class WAVLTree {
 			temp.parent.rank++;  //promote x
 			temp=temp.parent; 
 			rebalances++;
-			if (temp.parent==null) {
+			if (temp==root) {
 				caseNum=0; 
 				break; 
 			}
@@ -233,8 +232,6 @@ public class WAVLTree {
    */
 
    
-
-   
    /**
    * public int delete(int k)
    *
@@ -265,6 +262,8 @@ public class WAVLTree {
 	   x.left=B;
 	   B.parent=x;
 	   
+	   if(root.parent!=null) root=root.parent; //fix root pointer
+	   
 	   x.size=x.left.size+x.right.size+1; //only x,y sizes changed- so we can use unchanged sizes
 	   y.size=y.left.size+y.right.size+1; //y relies on x size- important to update it first
    }
@@ -286,6 +285,8 @@ public class WAVLTree {
 	   y.parent=x;
 	   y.right=B;
 	   B.parent=y;
+	   
+	   if(root.parent!=null) root=root.parent; //fix root pointer
 	   
 	   y.size=y.left.size+y.right.size+1; //only x,y sizes changed- so we can use unchanged sizes
 	   x.size=x.left.size+x.right.size+1; //x relies on y size- important to update it first
