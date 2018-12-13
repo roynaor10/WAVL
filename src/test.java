@@ -5,10 +5,10 @@ public class test {
 	public static void main(String[] args) {
 		WAVLTree wTree=new WAVLTree();
 		wTree.insert(20, "please work"); 
-		wTree.insert(10, "hello"); 
-		wTree.insert(30, "there"); 
 		wTree.insert(5, "there"); 
+		wTree.insert(10, "hello"); 
 		wTree.insert(15, "there"); 
+		wTree.insert(30, "there"); 
 		wTree.insert(25, "there"); 
 		wTree.insert(35, "there"); 
 

@@ -58,10 +58,12 @@ public class WAVLTree {
    * finds insertion point in subtree.
    * Returns insertion position if not in tree, or the node with insertion key 
    * if already in tree. returns null if tree is empty.
+   * updates sizes "on the way down"
    */
   private WAVLNode treePosition(int k,WAVLNode searched) {
 	  WAVLNode prev = null;
 	  while (searched != null) {
+		  searched.size++; //updates sizes on the way
 		prev = searched;
 		if (k == searched.key) {
 			return searched;
@@ -115,6 +117,7 @@ public class WAVLTree {
 	   
 	   WAVLNode insertionNode=new WAVLNode(k,i);
 	   insertionNode.rank=0;
+	   insertionNode.size=1;
 	   insertionNode.left=EXT;
 	   insertionNode.right=EXT;
 	   WAVLNode parentNode=treePosition(k, root);
@@ -162,6 +165,7 @@ public class WAVLTree {
 			if (temp.parent.left==temp) {
 				leftRotate(temp);
 				rightRotate(temp.parent.parent);
+				//System.out.println(temp.right.key);
 				temp.rank--; //demote x
 				temp.parent.right.rank--; //demote z
 				temp.parent.rank++; //promote b
@@ -178,7 +182,6 @@ public class WAVLTree {
 			break; 
 		} //switch ends  
 	   }
-	   root.size++; //TODO sizes properly
 	   return rebalances;
    }
    
@@ -256,6 +259,9 @@ public class WAVLTree {
 	   WAVLNode y=x.left;
 	   WAVLNode B=y.right;
 	   
+	   if(y!=root && y.parent.left==y) y.parent.left=x; //fix upper tree connection
+	   else if(y!=root && y.parent.right==y) y.parent.right=x;
+	   
 	   y.parent=x.parent;
 	   y.right=x;
 	   x.parent=y;
@@ -279,6 +285,9 @@ public class WAVLTree {
    private void leftRotate(WAVLNode y) {
 	   WAVLNode x=y.right;
 	   WAVLNode B=x.left;
+	   
+	   if(y!=root && y.parent.left==y) y.parent.left=x; //fix upper tree connection
+	   else if(y!=root && y.parent.right==y) y.parent.right=x;
 	   
 	   x.parent=y.parent;
 	   x.left=y;
