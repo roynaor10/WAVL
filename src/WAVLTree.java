@@ -11,9 +11,8 @@ public class WAVLTree {
 	
 	private WAVLNode root;
 	private final WAVLNode EXT = new WAVLNode(-1, null); //general object used as external leaf
+	private final int ERROR_INDICTATOR=-1;
 	
-	//TODO many methods use ==null: is it problematic with EXT?  notice ranks>=0 
-	//TODO use get() and ignore EXT
 
   /**
    * public boolean empty()
@@ -45,10 +44,10 @@ public class WAVLTree {
 		}
 		else {
 			if (k < current.key) {
-				current = current.left; 
+				current = current.getLeft(); 
 			}
 			else {
-				current = current.right;
+				current = current.getRight();
 			}
 		}
 	} 
@@ -59,20 +58,22 @@ public class WAVLTree {
    * finds insertion point in subtree.
    * Returns insertion position if not in tree, or the node with insertion key 
    * if already in tree. returns null if tree is empty.
+   * updates sizes "on the way down"
    */
-  private WAVLNode treePosition(int k,WAVLNode inserted) {
+  private WAVLNode treePosition(int k,WAVLNode searched) {
 	  WAVLNode prev = null;
-	  while (inserted != null) {
-		prev = inserted;
-		if (k == inserted.key) {
-			return inserted;
+	  while (searched != null) {
+		  searched.size++; //updates sizes on the way
+		prev = searched;
+		if (k == searched.key) {
+			return searched;
 		}
 		else {
-			if (k < inserted.key) {
-				inserted = inserted.left;
+			if (k < searched.key) {
+				searched = searched.getLeft();
 			}
 			else {
-				inserted = inserted.right;
+				searched = searched.getRight();
 			}
 		}
 	}
@@ -80,15 +81,15 @@ public class WAVLTree {
   }
   
   /**
-   * returns the node with the next key by value in the tree (such the kry is the minimal key that satisfies key>x.key)
+   * returns the node with the next key by value in the tree (such that the key is the minimal key that satisfies key>x.key)
    * implementation identical to one shown in class
    */
   private WAVLNode successor(WAVLNode x) {
-	  if (x.right!=null) return minNode(x);
+	  if (x.getRight()!=null) return minNode(x);
 	  
 	  WAVLNode y=x.parent;
 	  
-	  while(y!=null && x== y.right) {
+	  while(y!=null && x== y.getRight()) {
 		  x=y;
 		  y=x.parent;
 	  }
@@ -104,11 +105,145 @@ public class WAVLTree {
    * the tree must remain valid (keep its invariants).
    * returns the number of rebalancing operations, or 0 if no rebalancing operations were necessary.
    * returns -1 if an item with key k already exists in the tree.
+   * algorithm first inserts like unbalanced binary tree, then  rebalances like algorithm shown in class. 
    */
    public int insert(int k, String i) {
-          return 42;    // to be replaced by student code
+	   
+	   if(empty()) {
+		   initializeRoot(k, i); //base case
+		   return 0;
+	   }
+	   
+	   //insertion
+	   
+	   WAVLNode insertionNode=new WAVLNode(k,i);
+	   insertionNode.rank=0;
+	   insertionNode.size=1;
+	   insertionNode.left=EXT;
+	   insertionNode.right=EXT;
+	   WAVLNode parentNode=treePosition(k, root);
+	   if (parentNode.key==insertionNode.key) {
+		   return ERROR_INDICTATOR; //for error: key in tree
+	   }
+	   if(parentNode.key>insertionNode.key) {
+		   parentNode.left=insertionNode;
+		   insertionNode.parent=parentNode;
+	   }
+	   else { //parentNode.key<insertionNode.key
+		   parentNode.right=insertionNode;
+		   insertionNode.parent=parentNode;
+	   }
+	   
+	   //rebalance
+	   int rebalances=0;
+	   WAVLNode temp=insertionNode;
+	   int caseNum=whichCase(temp);
+	   while (caseNum!=0) { //tree isn't fixed
+		   switch (caseNum) {
+		case 1:
+			temp.parent.rank++;  //promote x
+			temp=temp.parent; 
+			rebalances++; //one promote
+			if (temp==root) { //root need not push problem upwards- fixed
+				caseNum=0; 
+				break; 
+			}
+			caseNum=whichCase(temp);
+			break;
+		case 2:
+			if(temp.parent.left==temp) {
+				rightRotate(temp.parent);
+				temp.right.rank--; //demote z
+			}
+			else { //symmetric case
+				leftRotate(temp.parent);
+				temp.left.rank--; //demote z
+			}
+			rebalances+=2; //1 rotate, 1 demote
+			caseNum=0; 
+			break; 
+		case 3:
+			if (temp.parent.left==temp) {
+				leftRotate(temp);
+				rightRotate(temp.parent.parent); //left-right double rotate
+				temp.rank--; //demote x
+				temp.parent.right.rank--; //demote z
+				temp.parent.rank++; //promote b
+			}
+			else {
+				rightRotate(temp);
+				leftRotate(temp.parent.parent); //right-left double rotate
+				temp.rank--; //demote x
+				temp.parent.left.rank--; //demote z
+				temp.parent.rank++; //promote b
+			}
+			rebalances+=5; //2 rotates, 3 demotes/promotes
+			caseNum=0; 
+			break; 
+		} //switch ends  
+	   }
+	   return rebalances;
    }
+   
+   /**
+    * initilizes an empty tree by inserting first node to the root of the tree, init size,rank
+    */
+   private void initializeRoot(int k, String i) {
+	   root=new WAVLNode(k,i);
+	   root.size=1;
+	   root.rank=0;
+	   root.left=EXT;
+	   root.right=EXT;
+}
 
+   /**
+    * a methods which determines the current needed rebalancing action needed 
+    * in relation to the position of node checked up the tree.
+    * method uses process of elimintion to determine case under the assumption that there are no other
+    * cases (told but not proven in class). 
+    * @return 0 if tree is balanced, 1,2,3 according to cases shown in lecture (including symmetric cases).
+    */
+   private int whichCase(WAVLNode currentNode) { //0=fine, 1,2,3=case according to lecture
+	   int diff1 = currentNode.parent.getRank() - currentNode.getRank(); //z
+	   if(diff1!=0) return 0;
+	   int diff2 = currentNode.parent.getRank() - currentNode.getSibling().getRank(); //z-y
+	   if (diff2==1) return 1;
+	   int diff3=currentNode.getRank()-currentNode.left.getRank();
+	   if(currentNode.parent.left==currentNode && diff3==1) return 2;
+	   if(currentNode.parent.right==currentNode && diff3==2) return 2;
+	   return 3;
+   }
+   
+   /*
+    * old code
+   private boolean case1(WAVLNode currentNode) {
+	   int diff1 = currentNode.parent.rank - currentNode.rank; 
+	   int diff2 = currentNode.parent.rank - currentNode.parent.getSibling().rank;
+	   return diff1 == 0 && diff2 == 1;  
+   }
+   
+   private boolean case2(WAVLNode currentNode) {
+	   boolean case2A = false;
+	   boolean case2B = false; 
+	   int diff1 = currentNode.rank - currentNode.left.rank; 
+	   int diff2 = currentNode.rank - currentNode.right.rank; 	   
+	   if (!(diff1 == 1 && diff2 == 2)) { // condition for case 2A
+		   
+	   }
+	   
+	   if (!(diff2 == 2 && diff1 == 1)) { // condition for case 2B
+		   
+	   }
+		   
+		   
+		   return false; 
+	   diff1 = currentNode.parent.rank - currentNode.rank; 
+	   diff2 = currentNode.parent.right.rank - currentNode.parent.rank; 
+	   return diff1 == 0 && diff2 == 2; 
+   }
+   */
+
+   
    /**
    * public int delete(int k)
    *
@@ -132,12 +267,18 @@ public class WAVLTree {
    private void rightRotate(WAVLNode x) {
 	   WAVLNode y=x.left;
 	   WAVLNode B=y.right;
+	   System.out.println(x.key);
+	   
+	   if(x!=root && x.parent.left==x) x.parent.left=y; //fix upper tree connection
+	   else if(x!=root && x.parent.right==x) x.parent.right=y;
 	   
 	   y.parent=x.parent;
 	   y.right=x;
 	   x.parent=y;
 	   x.left=B;
 	   B.parent=x;
+	   
+	   if(root.parent!=null) root=root.parent; //fix root pointer
 	   
 	   x.size=x.left.size+x.right.size+1; //only x,y sizes changed- so we can use unchanged sizes
 	   y.size=y.left.size+y.right.size+1; //y relies on x size- important to update it first
@@ -155,11 +296,16 @@ public class WAVLTree {
 	   WAVLNode x=y.right;
 	   WAVLNode B=x.left;
 	   
+	   if(y!=root && y.parent.left==y) y.parent.left=x; //fix upper tree connection
+	   else if(y!=root && y.parent.right==y) y.parent.right=x;
+	   
 	   x.parent=y.parent;
 	   x.left=y;
 	   y.parent=x;
 	   y.right=B;
 	   B.parent=y;
+	   
+	   if(root.parent!=null) root=root.parent; //fix root pointer
 	   
 	   y.size=y.left.size+y.right.size+1; //only x,y sizes changed- so we can use unchanged sizes
 	   x.size=x.left.size+x.right.size+1; //x relies on y size- important to update it first
@@ -175,7 +321,7 @@ public class WAVLTree {
 	   return minNode(root).getValue(); 
    }
    
-   public WAVLNode minNode(WAVLNode root) {
+   private WAVLNode minNode(WAVLNode root) {
 	   if (root == null) {
 		   return null; 
 	   }
@@ -195,7 +341,7 @@ public class WAVLTree {
 	   return maxNode(root).getValue(); 
    }
    
-   public WAVLNode maxNode(WAVLNode root) { 
+   private WAVLNode maxNode(WAVLNode root) { 
 	   if (root == null) {
 		   return null; 
 	   }
@@ -213,7 +359,7 @@ public class WAVLTree {
    * implemented using  inorder recursion.
    */
    public int[] keysToArray() {
-	   int[] keys = new int[size()]; 
+	   int[] keys = new int[size()];
 	   WAVLNode temp = root; 
 	   keysInOrder(temp, keys, 0); 
 	   return keys; 
@@ -225,7 +371,7 @@ public class WAVLTree {
 			return i;
 	   }
 	   i = keysInOrder(temp.getLeft(), arr, i);
-	   arr[i++] = temp.getKey();
+	   arr[i++] = temp.getKey(); 
 	   i = keysInOrder(temp.getRight(), arr, i);
 	   return i; 
    }
@@ -283,9 +429,8 @@ public class WAVLTree {
     * Example 1: select(1) returns the value of the node with minimal key 
         * Example 2: select(size()) returns the value of the node with maximal key 
         * Example 3: select(2) returns the value 2nd smallest minimal node, i.e the value of the node minimal node's successor  
-    * TODO change? may need to implement in O(log(n))
     */   
-   public String select(int i) {
+   public String select(int i) { //    * TODO change? may need to implement in O(log(n))
 	   return infoToArray()[i]; 
    }
    
@@ -323,6 +468,7 @@ public class WAVLTree {
   	 }
   	 
   	 public WAVLNode getLeft() {
+  		 if(this.left==EXT) return null;
   		 return left; 
   	 }
   	 
@@ -331,6 +477,7 @@ public class WAVLTree {
   	 }
   	 
   	 public WAVLNode getRight() {
+  		 if(this.right==EXT) return null;
   		 return right; 
   	 }
   	 
@@ -341,6 +488,18 @@ public class WAVLTree {
        public int getSubtreeSize() {
       	 return size; 
        }
+       
+       public int getRank() { //to access EXT rank
+		if(this==EXT) return -1;
+		return rank;
+	}
+       
+       public WAVLNode getSibling() {
+		if (this.parent.right==this) { //checks if right child and returns left and vice versa
+			return parent.left;
+		}
+		return parent.right;
+	}
        
     }
 }
