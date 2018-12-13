@@ -7,7 +7,7 @@ public class test {
 		wTree.insert(20, "please work"); 
 		wTree.insert(5, "there"); 
 		wTree.insert(10, "hello"); 
-		wTree.insert(15, "there"); 
+		wTree.insert(15, "ther6e"); 
 		wTree.insert(30, "there"); 
 		wTree.insert(25, "there"); 
 		wTree.insert(35, "there"); 

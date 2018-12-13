@@ -105,10 +105,11 @@ public class WAVLTree {
    * the tree must remain valid (keep its invariants).
    * returns the number of rebalancing operations, or 0 if no rebalancing operations were necessary.
    * returns -1 if an item with key k already exists in the tree.
+   * algorithm first inserts like unbalanced binary tree, then  rebalances like algorithm shown in class. 
    */
    public int insert(int k, String i) {
 	   
-	   if(root==null) {
+	   if(empty()) {
 		   initializeRoot(k, i); //base case
 		   return 0;
 	   }
@@ -137,13 +138,13 @@ public class WAVLTree {
 	   int rebalances=0;
 	   WAVLNode temp=insertionNode;
 	   int caseNum=whichCase(temp);
-	   while (caseNum!=0) {
+	   while (caseNum!=0) { //tree isn't fixed
 		   switch (caseNum) {
 		case 1:
 			temp.parent.rank++;  //promote x
 			temp=temp.parent; 
-			rebalances++;
-			if (temp==root) {
+			rebalances++; //one promote
+			if (temp==root) { //root need not push problem upwards- fixed
 				caseNum=0; 
 				break; 
 			}
@@ -154,30 +155,29 @@ public class WAVLTree {
 				rightRotate(temp.parent);
 				temp.right.rank--; //demote z
 			}
-			else { //symmetric
+			else { //symmetric case
 				leftRotate(temp.parent);
 				temp.left.rank--; //demote z
 			}
-			rebalances+=2;
+			rebalances+=2; //1 rotate, 1 demote
 			caseNum=0; 
 			break; 
 		case 3:
 			if (temp.parent.left==temp) {
 				leftRotate(temp);
-				rightRotate(temp.parent.parent);
-				//System.out.println(temp.right.key);
+				rightRotate(temp.parent.parent); //left-right double rotate
 				temp.rank--; //demote x
 				temp.parent.right.rank--; //demote z
 				temp.parent.rank++; //promote b
 			}
 			else {
 				rightRotate(temp);
-				leftRotate(temp.parent.parent);
+				leftRotate(temp.parent.parent); //right-left double rotate
 				temp.rank--; //demote x
 				temp.parent.left.rank--; //demote z
 				temp.parent.rank++; //promote b
 			}
-			rebalances+=5;
+			rebalances+=5; //2 rotates, 3 demotes/promotes
 			caseNum=0; 
 			break; 
 		} //switch ends  
@@ -185,6 +185,9 @@ public class WAVLTree {
 	   return rebalances;
    }
    
+   /**
+    * initilizes an empty tree by inserting first node to the root of the tree, init size,rank
+    */
    private void initializeRoot(int k, String i) {
 	   root=new WAVLNode(k,i);
 	   root.size=1;
@@ -193,7 +196,13 @@ public class WAVLTree {
 	   root.right=EXT;
 }
 
-   //TODO might very well crash - check thoroughly
+   /**
+    * a methods which determines the current needed rebalancing action needed 
+    * in relation to the position of node checked up the tree.
+    * method uses process of elimintion to determine case under the assumption that there are no other
+    * cases (told but not proven in class). 
+    * @return 0 if tree is balanced, 1,2,3 according to cases shown in lecture (including symmetric cases).
+    */
    private int whichCase(WAVLNode currentNode) { //0=fine, 1,2,3=case according to lecture
 	   int diff1 = currentNode.parent.getRank() - currentNode.getRank(); //z
 	   if(diff1!=0) return 0;
@@ -311,7 +320,7 @@ public class WAVLTree {
 	   return minNode(root).getValue(); 
    }
    
-   public WAVLNode minNode(WAVLNode root) {
+   private WAVLNode minNode(WAVLNode root) {
 	   if (root == null) {
 		   return null; 
 	   }
@@ -331,7 +340,7 @@ public class WAVLTree {
 	   return maxNode(root).getValue(); 
    }
    
-   public WAVLNode maxNode(WAVLNode root) { 
+   private WAVLNode maxNode(WAVLNode root) { 
 	   if (root == null) {
 		   return null; 
 	   }
