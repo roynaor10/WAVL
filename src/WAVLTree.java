@@ -116,15 +116,17 @@ public class WAVLTree {
 	   
 	   //insertion
 	   
+	   //insertion
+	   if (search(k)!=null) { 
+		   return ERROR_INDICTATOR; //for error: key in tree
+	   }
+	   // by this point we know for sure that the key does not exist in the tree 
 	   WAVLNode insertionNode=new WAVLNode(k,i);
 	   insertionNode.rank=0;
 	   insertionNode.size=1;
 	   insertionNode.left=EXT;
 	   insertionNode.right=EXT;
 	   WAVLNode parentNode=treePosition(k, root);
-	   if (parentNode.key==insertionNode.key) {
-		   return ERROR_INDICTATOR; //for error: key in tree
-	   }
 	   if(parentNode.key>insertionNode.key) {
 		   parentNode.left=insertionNode;
 		   insertionNode.parent=parentNode;
