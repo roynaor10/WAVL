@@ -113,9 +113,7 @@ public class WAVLTree {
 		   initializeRoot(k, i); //base case
 		   return 0;
 	   }
-	   
-	   //insertion
-	   
+	   	   
 	   //insertion
 	   if (search(k)!=null) { 
 		   return ERROR_INDICTATOR; //for error: key in tree
@@ -254,8 +252,84 @@ public class WAVLTree {
    * returns the number of rebalancing operations, or 0 if no rebalancing operations were needed.
    * returns -1 if an item with key k was not found in the tree.
    */
-   public int delete(int k) {
-           return 42;   // to be replaced by student code
+      public int delete(int k) { 
+	   // base case: tree is empty or an item with key k was not found in the tree
+	   if (empty() || search(k) == null) { 
+		   return ERROR_INDICTATOR; 
+	   }
+	   
+	   //deletion
+	   WAVLNode deletionNode = treePosition2(k, root);
+	   if (!isLeaf(deletionNode) && !isUnary(deletionNode)) { // if internal leaf 
+		   WAVLNode suc = successor(deletionNode); 
+		   replace(suc, deletionNode); // TODO replace  
+	   }
+	   if (isLeaf(deletionNode)) {
+		   int leafNumCase = leafDeletionCases(deletionNode); 
+		   if (leafNumCase == 2) { // demote z 
+			   deletionNode.parent.rank--; 
+		   }
+		   if (deletionNode.parent.left == deletionNode) {
+			   deletionNode.parent.setLeft(EXT);
+			   deletionNode.setParent(null);    
+		   }
+		   else {
+			   deletionNode.parent.setRight(EXT); 
+			   deletionNode.setParent(null);
+		   }
+		   if (leafNumCase == 1) { // fixed case 1 
+			   return 0; 
+		   }
+	   }
+	   else if (isUnary(deletionNode)) { // TODO - fix if root is father 
+		   int unaryNumCase = unaryDeletionCases(deletionNode);  
+		   if (deletionNode.parent.left == deletionNode) { 
+			   deletionNode.parent.setLeft(deletionNode.left);
+			   deletionNode.setParent(null);
+		   } 
+		   else {
+			   deletionNode.parent.setRight(deletionNode.right);
+			   deletionNode.setParent(null);
+		   }
+		   if (unaryNumCase == 1 || unaryNumCase == 2) { // fixed cases 1,2
+			   return 0; 
+		   }
+	   }
+	   
+	   return 42; 
+   }
+   
+   private boolean isLeaf(WAVLNode node) { 
+	   return node.getRight() == null && node.getLeft() == null; 
+   }
+   
+   private boolean isUnary(WAVLNode node) {
+	   return (node.getLeft() != null && node.getRight() == null) || (node.getLeft() == null && node.getRight() != null); 
+
+   }
+   
+   private int leafDeletionCases(WAVLNode node) {
+	   int diff1 = node.parent.rank - node.rank; 
+	   int diff2 = node.parent.rank - node.getSibling().rank;
+	   if (diff1 == 1) {
+		   if (diff2 == 1) { 
+			   return 1; // diff1 = 1, diff2 = 1
+		   }
+		   return 2; // diff1 = 1, diff2 = 2
+	   } 
+	   return 3; // diff1 == 2, diff2 = 1,2 
+   }
+   
+   private int unaryDeletionCases(WAVLNode node) {
+	   int diff1 = node.parent.rank - node.rank; 
+	   if (diff1 != 1) {
+		   return 3; 
+	   }
+	   int diff2 = node.parent.rank - node.getSibling().rank; 
+	   if (diff2 == 1) {
+		   return 1; 
+	   }
+	   return 2; 
    }
 
    /**
