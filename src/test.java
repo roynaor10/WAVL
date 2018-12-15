@@ -6,13 +6,22 @@ public class test {
 		WAVLTree wTree=new WAVLTree();
 
 
-		wTree.insert(5, "5"); 
-		wTree.insert(4, "4"); 
-		wTree.insert(3, "3"); 
-		wTree.insert(2, "2"); 
-		wTree.insert(1, "1"); 	
+		wTree.insert(20, "5"); 
+		wTree.insert(10, "4"); 
+		wTree.insert(30, "3"); 
+		wTree.insert(5, "2"); 
+		wTree.insert(15, "1"); 	
+		wTree.insert(25, "1"); 	
+		wTree.insert(35, "1"); 	
+		wTree.insert(40, "1"); 	
+		wTree.delete(35);
+		wTree.delete(30);
+		wTree.delete(25);
+		//wTree.delete(20);
 		System.out.println(wTree.size());
 		System.out.println(Arrays.toString(wTree.keysToArray()));
-		System.out.println(Arrays.toString(wTree.infoToArray())); 
+		//System.out.println(Arrays.toString(wTree.infoToArray())); 
+
+
 	}
 }

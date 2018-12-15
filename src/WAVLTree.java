@@ -85,7 +85,7 @@ public class WAVLTree {
    * implementation identical to one shown in class
    */
   private WAVLNode successor(WAVLNode x) {
-	  if (x.getRight()!=null) return minNode(x);
+	  if (x.getRight()!=null) return minNode(x.right);
 	  
 	  WAVLNode y=x.parent;
 	  
@@ -260,58 +260,151 @@ public class WAVLTree {
 	   
 	   //deletion
 	   WAVLNode deletionNode = treePosition(k, root,false); //we will update sizes later
-	   if (!isLeaf(deletionNode) && !isUnary(deletionNode)) { // if internal leaf 
+	   WAVLNode rebalanceNode=deletionNode.parent; //save for later for rebalancing
+	   
+	   if (!isLeaf(deletionNode) && !isUnary(deletionNode)) { // if internal binary leaf 
 		   WAVLNode suc = successor(deletionNode); 
-		   replace(suc, deletionNode);  
+		   rebalanceNode=suc.parent; //NOTE: suc is NOT the root
+		   if(rebalanceNode==deletionNode) rebalanceNode=rebalanceNode.parent; //edge case 
+		   
+		   //replace(suc, deletionNode);  TODO not use this?
+		   deleteBinary(deletionNode,suc);
+		   //we CANNOT know if tree is balanced immediately as there may be a (1,3) or (3,2) case (maybe also others)
+		   
 	   }
-	   if (isLeaf(deletionNode)) {
-		   int leafNumCase = leafDeletionCases(deletionNode); 
+	   else if (isLeaf(deletionNode)) {
+/*		   int leafNumCase = leafDeletionCases(deletionNode); 
 		   if (leafNumCase == 2) { // demote z 
 			   deletionNode.parent.rank--; 
-		   }
-		   if (deletionNode.parent.left == deletionNode) {
-			   deletionNode.parent.setLeft(EXT);
-			   deletionNode.setParent(null);    
-		   }
-		   else {
-			   deletionNode.parent.setRight(EXT); 
-			   deletionNode.setParent(null);
-		   }
-		   if (leafNumCase == 1) { // fixed case 1 
+		   }*/
+		   
+		   deleteLeaf(deletionNode);
+		   
+		   if (root==null) return 0;
+		   
+/*		   if (leafNumCase == 1) { // fixed case 1 
 			   return 0; 
-		   }
+		   }*/
+
 	   }
-	   else if (isUnary(deletionNode)) { // TODO - fix if root is father 
-		   int unaryNumCase = unaryDeletionCases(deletionNode);  
-		   if (deletionNode.parent.left == deletionNode) { 
-			   deletionNode.parent.setLeft(deletionNode.left);
-			   deletionNode.setParent(null);
-		   } 
-		   else {
-			   deletionNode.parent.setRight(deletionNode.right);
-			   deletionNode.setParent(null);
-		   }
-		   if (unaryNumCase == 1 || unaryNumCase == 2) { // fixed cases 1,2
+	   else if (isUnary(deletionNode)) { 
+//		   int unaryNumCase = unaryDeletionCases(deletionNode);  
+		   
+		   deleteUnary(deletionNode);
+		   
+		   if(root.right==EXT && root.left==EXT) return 0; //we deleted the last root, now tree definitely balanced (one node in it)
+		   
+/*		   if (unaryNumCase == 1 || unaryNumCase == 2) { // fixed cases 1,2
 			   return 0; 
-		   }
+		   }*/
 	   }
+	   
+	   decreaseSizesUp(rebalanceNode); //fix sizes up the tree- opposite of insert updates. note rebalanceNode is deleted.parent
 	   
 	   return 42; 
    }
-   
-      //TODO replaces node with succsesor for delete- may return deleted's parent for rebalancing
-   private void replace(WAVLNode suc, WAVLNode deletionNode) {
-	// TODO Auto-generated method stub
-	
-}
 
-private boolean isLeaf(WAVLNode node) { 
+
+//TODO replaces node with succsesor for delete- may return deleted's parent for rebalancing
+   private void replace(WAVLNode suc, WAVLNode deletionNode) {
+	   
+
+   }
+
+   private void deleteLeaf(WAVLNode deletionNode) {
+	   
+	   deletionNode.size=1;
+	   
+	   if(deletionNode==root) { //single node in tree
+		   root=null;
+		   return;
+	   }
+	   else if (deletionNode.parent.left == deletionNode) { //deletionNode not EXT or with null parent
+		   deletionNode.parent.left=EXT;
+		   deletionNode.parent=null;  
+	   }
+	   else {
+		   deletionNode.parent.right=EXT;
+		   deletionNode.parent=null;
+	   }
+	   
+   }
+   
+   private void deleteUnary(WAVLNode deletionNode) {
+	   
+	   deletionNode.size=1;
+	   
+	   boolean parentRight,sonRight;
+	   WAVLNode parentNode,sonNode;
+	   sonRight = deletionNode.right != EXT ? true:false;
+	   sonNode = sonRight ? deletionNode.right : deletionNode.left;
+	   deletionNode.right=EXT; //no problem-we have pointer to son
+	   deletionNode.left=EXT;
+	   
+	   if(deletionNode==root) {
+		   root=sonNode;
+		   sonNode.parent=null;
+		   return; //if this is the case sonNode now only node in tree-otherwise tree was unbalanced during insertion
+	   }
+	   //not a root
+	   parentRight= deletionNode.parent.right==deletionNode ? true:false;
+	   parentNode= deletionNode.parent;
+	   deletionNode.parent=null;
+	   sonNode.parent=parentNode;
+	   if(parentRight) parentNode.right=sonNode;
+	   else parentNode.left=sonNode;
+	   
+}
+   
+   private void deleteBinary(WAVLNode deletionNode, WAVLNode succsesor) {
+	   
+	   
+	   if(deletionNode==root) root=succsesor; //update root
+	   
+	   if(isLeaf(succsesor)) deleteLeaf(succsesor);
+	   else deleteUnary(succsesor); 
+	   //FIRST delete succsesor then switch pointers with deleted- now pointers are (null,EXT,EXT)
+	   
+	   succsesor.size=deletionNode.size;
+	   deletionNode.size=1; //fix sizes
+	   
+	   WAVLNode rightNode=deletionNode.right;
+	   WAVLNode leftNode=deletionNode.left;
+	   WAVLNode parentNode=deletionNode.parent;
+	   
+	   
+	   //give successor all pointers
+	   succsesor.right=rightNode;
+	   rightNode.parent=succsesor; //not EXT/null
+	   succsesor.left=leftNode;
+	   leftNode.parent=succsesor; //not EXT/null
+	   succsesor.parent=parentNode;
+	   if(parentNode!=null) {
+	   if(deletionNode==parentNode.right) parentNode.right=succsesor;
+	   else parentNode.left=succsesor;
+	   }
+	   
+	   //null deletion pointers
+	   deletionNode.right=EXT;
+	   deletionNode.left=EXT;
+	   deletionNode.parent=null;
+	   
+   }
+   
+   private boolean isLeaf(WAVLNode node) { 
 	   return node.getRight() == null && node.getLeft() == null; 
    }
    
    private boolean isUnary(WAVLNode node) {
 	   return (node.getLeft() != null && node.getRight() == null) || (node.getLeft() == null && node.getRight() != null); 
 
+   }
+   
+   private void decreaseSizesUp(WAVLNode node) {
+	while (node!=null) {
+		node.size--;
+		node=node.parent;
+	}
    }
    
    //TODO will not work with root- if we stick with this we need to add "case 0" for root deletion 
@@ -351,7 +444,6 @@ private boolean isLeaf(WAVLNode node) {
    private void rightRotate(WAVLNode x) {
 	   WAVLNode y=x.left;
 	   WAVLNode B=y.right;
-	   System.out.println(x.key);
 	   
 	   if(x!=root && x.parent.left==x) x.parent.left=y; //fix upper tree connection
 	   else if(x!=root && x.parent.right==x) x.parent.right=y;
@@ -586,6 +678,7 @@ private boolean isLeaf(WAVLNode node) {
 	}
 
        //TODO for now i'll implement double sided-we can easily change later.
+       /*
        public void setRight(WAVLNode rightnode) {
     	   this.right=rightnode;
     	   if (rightnode!=EXT) rightnode.parent=this; //only one EXT node- problematic with parent 
@@ -603,5 +696,6 @@ private boolean isLeaf(WAVLNode node) {
     	   this.left=leftnode;
     	   if (leftnode!=EXT) leftnode.parent=this; //only one EXT node- problematic with parent 
        }
+       */
    }
 }
