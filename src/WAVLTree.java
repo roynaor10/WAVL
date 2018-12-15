@@ -60,10 +60,10 @@ public class WAVLTree {
    * if already in tree. returns null if tree is empty.
    * updates sizes "on the way down"
    */
-  private WAVLNode treePosition(int k,WAVLNode searched) {
+  private WAVLNode treePosition(int k,WAVLNode searched,boolean updateSizes) {
 	  WAVLNode prev = null;
 	  while (searched != null) {
-		  searched.size++; //updates sizes on the way
+		 if(updateSizes) searched.size++; //updates sizes on the way
 		prev = searched;
 		if (k == searched.key) {
 			return searched;
@@ -124,7 +124,7 @@ public class WAVLTree {
 	   insertionNode.size=1;
 	   insertionNode.left=EXT;
 	   insertionNode.right=EXT;
-	   WAVLNode parentNode=treePosition(k, root);
+	   WAVLNode parentNode=treePosition(k, root,true);
 	   if(parentNode.key>insertionNode.key) {
 		   parentNode.left=insertionNode;
 		   insertionNode.parent=parentNode;
@@ -259,10 +259,10 @@ public class WAVLTree {
 	   }
 	   
 	   //deletion
-	   WAVLNode deletionNode = treePosition2(k, root);
+	   WAVLNode deletionNode = treePosition(k, root,false); //we will update sizes later
 	   if (!isLeaf(deletionNode) && !isUnary(deletionNode)) { // if internal leaf 
 		   WAVLNode suc = successor(deletionNode); 
-		   replace(suc, deletionNode); // TODO replace  
+		   replace(suc, deletionNode);  
 	   }
 	   if (isLeaf(deletionNode)) {
 		   int leafNumCase = leafDeletionCases(deletionNode); 
@@ -299,7 +299,13 @@ public class WAVLTree {
 	   return 42; 
    }
    
-   private boolean isLeaf(WAVLNode node) { 
+      //TODO replaces node with succsesor for delete- may return deleted's parent for rebalancing
+   private void replace(WAVLNode suc, WAVLNode deletionNode) {
+	// TODO Auto-generated method stub
+	
+}
+
+private boolean isLeaf(WAVLNode node) { 
 	   return node.getRight() == null && node.getLeft() == null; 
    }
    
@@ -308,6 +314,7 @@ public class WAVLTree {
 
    }
    
+   //TODO will not work with root- if we stick with this we need to add "case 0" for root deletion 
    private int leafDeletionCases(WAVLNode node) {
 	   int diff1 = node.parent.rank - node.rank; 
 	   int diff2 = node.parent.rank - node.getSibling().rank;
@@ -320,6 +327,7 @@ public class WAVLTree {
 	   return 3; // diff1 == 2, diff2 = 1,2 
    }
    
+   //TODO same problem as leaf
    private int unaryDeletionCases(WAVLNode node) {
 	   int diff1 = node.parent.rank - node.rank; 
 	   if (diff1 != 1) {
@@ -526,8 +534,8 @@ public class WAVLTree {
   	 public WAVLNode() {
   		 
   	 }
-  	
-  	 public WAVLNode(int key,String value) { //added constructor with arguments
+
+	public WAVLNode(int key,String value) { //added constructor with arguments
   		 this.key=key;
   		 this.value=value;
   	 }
@@ -576,6 +584,24 @@ public class WAVLTree {
 		}
 		return parent.right;
 	}
-       
-    }
+
+       //TODO for now i'll implement double sided-we can easily change later.
+       public void setRight(WAVLNode rightnode) {
+    	   this.right=rightnode;
+    	   if (rightnode!=EXT) rightnode.parent=this; //only one EXT node- problematic with parent 
+       }
+
+       public void setParent(WAVLNode parentnode,boolean isRightNode) {
+    	   this.parent=parentnode; 
+    	   if(this!=root) {
+    		   if(isRightNode) parentnode.right=this;
+    		   else parentnode.left=this;
+    	   }
+       }
+
+       public void setLeft(WAVLNode leftnode) {
+    	   this.left=leftnode;
+    	   if (leftnode!=EXT) leftnode.parent=this; //only one EXT node- problematic with parent 
+       }
+   }
 }
