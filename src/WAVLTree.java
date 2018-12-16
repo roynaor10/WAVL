@@ -11,7 +11,7 @@ public class WAVLTree {
 	
 	private WAVLNode root;
 	private final WAVLNode EXT = new WAVLNode(-1, null); //general object used as external leaf
-	private final int ERROR_INDICTATOR=-1;
+	private final int ERROR_INDICTATOR = -1;
 	
 
   /**
@@ -50,7 +50,7 @@ public class WAVLTree {
 				current = current.getRight();
 			}
 		}
-	} 
+	  }
         return null;
   }
   
@@ -413,29 +413,62 @@ public class WAVLTree {
    
    //TODO will not work with root- if we stick with this we need to add "case 0" for root deletion 
    private int leafDeletionCases(WAVLNode node) {
-	   int diff1 = node.parent.rank - node.rank; 
-	   int diff2 = node.parent.rank - node.getSibling().rank;
-	   if (diff1 == 1) {
-		   if (diff2 == 1) { 
-			   return 1; // diff1 = 1, diff2 = 1
-		   }
-		   return 2; // diff1 = 1, diff2 = 2
-	   } 
-	   return 3; // diff1 == 2, diff2 = 1,2 
+	   int diff1 = node.rank - node.right.rank; 
+	   int diff2 = node.rank - node.left.rank; 
+	   if ((diff1 == 1 && diff2 == 2) || (diff1 == 2 && diff2 == 1)) {
+		   return 1; 
+	   }
+	   if (diff1 == 1 && diff2 == 1) {
+		   return 2; 
+	   }
+	   return 3; 
    }
    
    //TODO same problem as leaf
    private int unaryDeletionCases(WAVLNode node) {
-	   int diff1 = node.parent.rank - node.rank; 
-	   if (diff1 != 1) {
-		   return 3; 
-	   }
-	   int diff2 = node.parent.rank - node.getSibling().rank; 
-	   if (diff2 == 1) {
+	   int diff1 = node.rank - node.right.rank; 
+	   int diff2 = node.rank - node.left.rank; 
+	   if ((diff1 == 1 && diff2 == 2) || (diff1 == 2 && diff2 == 1)) {
 		   return 1; 
 	   }
-	   return 2; 
+	   if (diff1 == 2 && diff2 == 2) {
+		   return 2; 
+	   }
+	   return 3; 
    }
+   
+   private int whichCaseDelete(WAVLNode node) {
+	   int diff1 = node.rank - node.right.rank; 
+	   int diff2 = node.rank - node.left.rank;  
+	   if ((diff1 == 2 && diff2 == 3) || (diff1 == 3 && diff2 == 2)) {
+		   return 1; 
+	   }
+	   if (diff1 == 1) {
+		   WAVLNode y = node.right; 
+		   int diff3 = y.rank - y.right.rank; 
+		   int diff4 = y.rank - y.left.rank; 
+		   if (diff3 == 1) {
+			   return 3; 
+		   }
+		   if (diff4 == 1) {
+			   return 4; 
+		   }
+		   return 2;  
+	   }
+	   else { // diff2 == 1
+		   WAVLNode y = node.left; 
+		   int diff3 = y.rank - y.left.rank; 
+		   int diff4 = y.rank - y.right.rank; 
+		   if (diff3 == 1) {
+			   return 3; 
+		   }
+		   if (diff4 == 1) {
+			   return 4; 
+		   }
+		   return 2; 
+	   } 
+   }
+	
 
    /**
     * rotates tree right as shown in class
@@ -599,7 +632,7 @@ public class WAVLTree {
     *
     */
    public WAVLNode getRoot() {
-           return root;
+	   return root; 
    }
 
    /**
@@ -637,7 +670,7 @@ public class WAVLTree {
   	 }
   	 
   	 public int getKey() {
-  		 return key; 
+  		 return this != null ? key : ERROR_INDICTATOR; 
   	 }
   	 
   	 /*
@@ -687,7 +720,6 @@ public class WAVLTree {
     	   this.right=rightnode;
     	   if (rightnode!=EXT) rightnode.parent=this; //only one EXT node- problematic with parent 
        }
-
        public void setParent(WAVLNode parentnode,boolean isRightNode) {
     	   this.parent=parentnode; 
     	   if(this!=root) {
@@ -695,7 +727,6 @@ public class WAVLTree {
     		   else parentnode.left=this;
     	   }
        }
-
        public void setLeft(WAVLNode leftnode) {
     	   this.left=leftnode;
     	   if (leftnode!=EXT) leftnode.parent=this; //only one EXT node- problematic with parent 
