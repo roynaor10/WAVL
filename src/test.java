@@ -17,7 +17,9 @@ public class test {
 		wTree.delete(35);
 		wTree.delete(30);
 		wTree.delete(25);
-		//wTree.delete(20);
+		wTree.delete(5);
+		wTree.delete(20);
+		//System.out.println(wTree.getRoot().getKey());
 		System.out.println(wTree.size());
 		System.out.println(Arrays.toString(wTree.keysToArray()));
 		//System.out.println(Arrays.toString(wTree.infoToArray())); 

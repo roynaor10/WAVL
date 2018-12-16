@@ -265,7 +265,11 @@ public class WAVLTree {
 	   if (!isLeaf(deletionNode) && !isUnary(deletionNode)) { // if internal binary leaf 
 		   WAVLNode suc = successor(deletionNode); 
 		   rebalanceNode=suc.parent; //NOTE: suc is NOT the root
-		   if(rebalanceNode==deletionNode) rebalanceNode=rebalanceNode.parent; //edge case 
+		   
+		   if(rebalanceNode==deletionNode) {
+			   if(rebalanceNode!=root) rebalanceNode=rebalanceNode.parent; //edge case if rebalancenode is suc.parent and deleted from tree
+			   else rebalanceNode=suc; //fixes problem if root==deletion with suc==deletion.right
+		   }
 		   
 		   //replace(suc, deletionNode);  TODO not use this?
 		   deleteBinary(deletionNode,suc);
@@ -359,11 +363,11 @@ public class WAVLTree {
    private void deleteBinary(WAVLNode deletionNode, WAVLNode succsesor) {
 	   
 	   
-	   if(deletionNode==root) root=succsesor; //update root
-	   
 	   if(isLeaf(succsesor)) deleteLeaf(succsesor);
 	   else deleteUnary(succsesor); 
 	   //FIRST delete succsesor then switch pointers with deleted- now pointers are (null,EXT,EXT)
+	   
+	   if(deletionNode==root) root=succsesor; //update root
 	   
 	   succsesor.size=deletionNode.size;
 	   deletionNode.size=1; //fix sizes
