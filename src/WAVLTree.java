@@ -372,6 +372,8 @@ public class WAVLTree {
 	   succsesor.size=deletionNode.size;
 	   deletionNode.size=1; //fix sizes
 	   
+	   succsesor.rank=deletionNode.rank; //fix ranks
+	   
 	   WAVLNode rightNode=deletionNode.right;
 	   WAVLNode leftNode=deletionNode.left;
 	   WAVLNode parentNode=deletionNode.parent;
@@ -411,7 +413,6 @@ public class WAVLTree {
 	}
    }
    
-   //TODO will not work with root- if we stick with this we need to add "case 0" for root deletion 
    private int leafDeletionCases(WAVLNode node) {
 	   int diff1 = node.rank - node.right.rank; 
 	   int diff2 = node.rank - node.left.rank; 
@@ -424,7 +425,6 @@ public class WAVLTree {
 	   return 3; 
    }
    
-   //TODO same problem as leaf
    private int unaryDeletionCases(WAVLNode node) {
 	   int diff1 = node.rank - node.right.rank; 
 	   int diff2 = node.rank - node.left.rank; 
