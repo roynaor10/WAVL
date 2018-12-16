@@ -589,7 +589,7 @@ public class WAVLTree {
     *
     */
    public int size() {
-           return root.size; 
+	   return root != null ? root.size : 0; 
    }
    
      /**
