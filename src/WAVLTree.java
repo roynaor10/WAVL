@@ -277,6 +277,7 @@ public class WAVLTree {
 		   
 	   }
 	   else if (isLeaf(deletionNode)) {
+		   
 /*		   int leafNumCase = leafDeletionCases(deletionNode); 
 		   if (leafNumCase == 2) { // demote z 
 			   deletionNode.parent.rank--; 
@@ -285,6 +286,13 @@ public class WAVLTree {
 		   deleteLeaf(deletionNode);
 		   
 		   if (root==null) return 0;
+		   
+		   int leafCases = leafDeletionCases(rebalanceNode); 
+		   if (leafCases == 1) {
+			   decreaseSizesUp(rebalanceNode); //fix sizes up the tree- opposite of insert updates. note rebalanceNode is deleted.parent
+			   return 0; 
+		   }
+		   if (leafCases)
 		   
 /*		   if (leafNumCase == 1) { // fixed case 1 
 			   return 0; 
