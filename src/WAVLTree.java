@@ -330,6 +330,7 @@ public class WAVLTree {
 				if (diff2 == 1) {
 					rebalanceNode.left.rank--; 
 				}
+				rebalanceNode.rank--;
 				rebalanceNode = rebalanceNode.parent; 
 				if (rebalanceNode == root) { //root need not push problem upwards- fixed
 					caseNum = 0; 
@@ -338,29 +339,28 @@ public class WAVLTree {
 				caseNum = whichCaseDelete(rebalanceNode);
 				break;
 			case 3:
-				rebalances = 1; 
 				diff1 = rebalanceNode.getRank() - rebalanceNode.right.getRank(); 
 				diff2 = rebalanceNode.getRank() - rebalanceNode.left.getRank();
 				if (diff1 == 1) {
 					leftRotate(rebalanceNode); 
-					WAVLNode z = rebalanceNode.left; 
-					int diff3 = z.getRank() - z.right.getRank(); 
-					int diff4 = z.getRank() - z.left.getRank(); 
+					int diff3 = rebalanceNode.getRank() - rebalanceNode.right.getRank(); 
+					int diff4 = rebalanceNode.getRank() - rebalanceNode.left.getRank(); 
 					if (diff3 == 2 && diff4 == 2) {
-						z.rank--; 
+						rebalanceNode.rank--; 
 						rebalances++; 
 					}
 				}
 				if (diff2 == 1) {
 					rightRotate(rebalanceNode); 
-					WAVLNode z = rebalanceNode.right; 
-					int diff3 = z.getRank() - z.right.getRank(); 
-					int diff4 = z.getRank() - z.left.getRank(); 
+					int diff3 = rebalanceNode.getRank() - rebalanceNode.right.getRank(); 
+					int diff4 = rebalanceNode.getRank() - rebalanceNode.left.getRank(); 
 					if (diff3 == 2 && diff4 == 2) {
-						z.rank--; 
+						rebalanceNode.rank--; 
 						rebalances++; 
 					}
 				}
+				
+				rebalances++;
 				caseNum = 0; 
 				break; 
 			case 4:
