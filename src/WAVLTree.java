@@ -304,6 +304,7 @@ public class WAVLTree {
 			   decreaseSizesUp(rebalanceNode);
 			   return 0; 
 		   }
+	   }
 		
 		 //rebalance
 		 int rebalances = 0;
@@ -318,7 +319,7 @@ public class WAVLTree {
 					caseNum = 0; 
 					break; 
 				}
-				caseNum = whichCase(rebalanceNode);
+				caseNum = whichCaseDelete(rebalanceNode);
 				break;
 			case 2:
 				int diff1 = rebalanceNode.rank - rebalanceNode.right.rank; 
@@ -334,7 +335,7 @@ public class WAVLTree {
 					caseNum = 0; 
 					break; 
 				}
-				caseNum = whichCase(rebalanceNode);
+				caseNum = whichCaseDelete(rebalanceNode);
 				break;
 			case 3:
 				rebalances = 1; 
@@ -363,22 +364,24 @@ public class WAVLTree {
 				caseNum = 0; 
 				break; 
 			case 4:
-				diff1 = 
-				diff2 = 
-				
-				
+				diff1 = rebalanceNode.rank - rebalanceNode.right.rank; 
+				diff2 = rebalanceNode.rank - rebalanceNode.left.rank;
+				if (diff1 == 1) {
+					rightRotate(rebalanceNode.right); 
+					leftRotate(rebalanceNode); 
+				}
+				if (diff2 == 1) {
+					leftRotate(rebalanceNode.left); 
+					rightRotate(rebalanceNode); 
+				}
+				caseNum = 0; 
+				break;
 			   } // end switch cases  
 			   
 		 } // end while loop 
-	  
-			   
-	   
-	   
-	   
 	   decreaseSizesUp(rebalanceNode); //fix sizes up the tree- opposite of insert updates. note rebalanceNode is deleted.parent
-	   
-	   return 42; 
-   }
+	   return rebalances; 
+      }
 
 
 //TODO replaces node with succsesor for delete- may return deleted's parent for rebalancing
