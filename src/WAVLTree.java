@@ -305,7 +305,9 @@ public class WAVLTree {
 			   return 0; 
 		   }
 	   }
+		 decreaseSizesUp(rebalanceNode); //fix sizes up the tree- opposite of insert updates. note rebalanceNode is deleted.parent
 		
+		 
 		 //rebalance
 		 int rebalances = 0;
 		 int caseNum = whichCaseDelete(rebalanceNode);
@@ -374,12 +376,13 @@ public class WAVLTree {
 					leftRotate(rebalanceNode.left); 
 					rightRotate(rebalanceNode); 
 				}
+				
+				rebalances+=2;
 				caseNum = 0; 
 				break;
 			   } // end switch cases  
 			   
 		 } // end while loop 
-	   decreaseSizesUp(rebalanceNode); //fix sizes up the tree- opposite of insert updates. note rebalanceNode is deleted.parent
 	   return rebalances; 
       }
 
