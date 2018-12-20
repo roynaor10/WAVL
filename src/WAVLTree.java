@@ -259,8 +259,8 @@ public class WAVLTree {
 	   }
 	   
 	   //deletion
-	   WAVLNode deletionNode = treePosition(k, root,false); //we will update sizes later
-	   WAVLNode rebalanceNode=deletionNode.parent; //save for later for rebalancing
+	   WAVLNode deletionNode = treePosition(k, root, false); //we will update sizes later
+	   WAVLNode rebalanceNode = deletionNode.parent; //save for later for rebalancing
 	   
 	   if (!isLeaf(deletionNode) && !isUnary(deletionNode)) { // if internal binary leaf 
 		   WAVLNode suc = successor(deletionNode); 
@@ -322,8 +322,8 @@ public class WAVLTree {
 				caseNum = whichCaseDelete(rebalanceNode);
 				break;
 			case 2:
-				int diff1 = rebalanceNode.rank - rebalanceNode.right.rank; 
-				int diff2 = rebalanceNode.rank - rebalanceNode.left.rank;
+				int diff1 = rebalanceNode.getRank() - rebalanceNode.right.getRank(); 
+				int diff2 = rebalanceNode.getRank() - rebalanceNode.left.getRank();
 				if (diff1 == 1) {
 					rebalanceNode.right.rank--;
 				}
@@ -339,13 +339,13 @@ public class WAVLTree {
 				break;
 			case 3:
 				rebalances = 1; 
-				diff1 = rebalanceNode.rank - rebalanceNode.right.rank; 
-				diff2 = rebalanceNode.rank - rebalanceNode.left.rank;
+				diff1 = rebalanceNode.getRank() - rebalanceNode.right.getRank(); 
+				diff2 = rebalanceNode.getRank() - rebalanceNode.left.getRank();
 				if (diff1 == 1) {
 					leftRotate(rebalanceNode); 
 					WAVLNode z = rebalanceNode.left; 
-					int diff3 = z.rank - z.right.rank; 
-					int diff4 = z.rank - z.left.rank; 
+					int diff3 = z.getRank() - z.right.getRank(); 
+					int diff4 = z.getRank() - z.left.getRank(); 
 					if (diff3 == 2 && diff4 == 2) {
 						z.rank--; 
 						rebalances++; 
@@ -354,8 +354,8 @@ public class WAVLTree {
 				if (diff2 == 1) {
 					rightRotate(rebalanceNode); 
 					WAVLNode z = rebalanceNode.right; 
-					int diff3 = z.rank - z.right.rank; 
-					int diff4 = z.rank - z.left.rank; 
+					int diff3 = z.getRank() - z.right.getRank(); 
+					int diff4 = z.getRank() - z.left.getRank(); 
 					if (diff3 == 2 && diff4 == 2) {
 						z.rank--; 
 						rebalances++; 
@@ -364,8 +364,8 @@ public class WAVLTree {
 				caseNum = 0; 
 				break; 
 			case 4:
-				diff1 = rebalanceNode.rank - rebalanceNode.right.rank; 
-				diff2 = rebalanceNode.rank - rebalanceNode.left.rank;
+				diff1 = rebalanceNode.getRank() - rebalanceNode.right.getRank(); 
+				diff2 = rebalanceNode.getRank() - rebalanceNode.left.getRank();
 				if (diff1 == 1) {
 					rightRotate(rebalanceNode.right); 
 					leftRotate(rebalanceNode); 
@@ -489,8 +489,8 @@ public class WAVLTree {
    }
    
    private int leafDeletionCases(WAVLNode node) {
-	   int diff1 = node.rank - node.right.rank; 
-	   int diff2 = node.rank - node.left.rank; 
+	   int diff1 = node.getRank() - node.right.getRank(); 
+	   int diff2 = node.getRank() - node.left.getRank(); 
 	   if ((diff1 == 1 && diff2 == 2) || (diff1 == 2 && diff2 == 1)) {
 		   return 1; 
 	   }
@@ -501,8 +501,8 @@ public class WAVLTree {
    }
    
    private int unaryDeletionCases(WAVLNode node) {
-	   int diff1 = node.rank - node.right.rank; 
-	   int diff2 = node.rank - node.left.rank; 
+	   int diff1 = node.getRank() - node.right.getRank(); 
+	   int diff2 = node.getRank() - node.left.getRank(); 
 	   if ((diff1 == 1 && diff2 == 2) || (diff1 == 2 && diff2 == 1)) {
 		   return 1; 
 	   }
@@ -513,8 +513,8 @@ public class WAVLTree {
    }
    
    private int whichCaseDelete(WAVLNode node) {
-	   int diff1 = node.rank - node.right.rank; 
-	   int diff2 = node.rank - node.left.rank; 
+	   int diff1 = node.getRank() - node.right.getRank(); 
+	   int diff2 = node.getRank() - node.left.getRank(); 
 	   if (diff1 != 3 && diff2 != 3) {
 		   return 0; 
 	   }
@@ -523,8 +523,8 @@ public class WAVLTree {
 	   }
 	   if (diff1 == 1) {
 		   WAVLNode y = node.right; 
-		   int diff3 = y.rank - y.right.rank; 
-		   int diff4 = y.rank - y.left.rank; 
+		   int diff3 = y.getRank() - y.right.getRank(); 
+		   int diff4 = y.getRank() - y.left.getRank(); 
 		   if (diff3 == 1) {
 			   return 3; 
 		   }
@@ -535,8 +535,8 @@ public class WAVLTree {
 	   }
 	   else { // diff2 == 1
 		   WAVLNode y = node.left; 
-		   int diff3 = y.rank - y.left.rank; 
-		   int diff4 = y.rank - y.right.rank; 
+		   int diff3 = y.getRank() - y.left.getRank(); 
+		   int diff4 = y.getRank() - y.right.getRank(); 
 		   if (diff3 == 1) {
 			   return 3; 
 		   }
