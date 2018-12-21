@@ -262,10 +262,10 @@ public class WAVLTree {
 	   WAVLNode deletionNode = treePosition(k, root, false); //we will update sizes later
 	   WAVLNode rebalanceNode = deletionNode.parent; //save for later for rebalancing
 	   WAVLNode resizeNode=rebalanceNode; //we may mess with rebalanceNode later, save this for size fixing
-	   
 	   boolean checkLeaf=isLeaf(deletionNode); //pre-saved check if we are deleting leaf or unary
 	   boolean checkUnary=isUnary(deletionNode);
 	   //if not both- binary:we will find succsesor and update correct checker
+	   
 	   
 	   
 	   if (!checkLeaf && !checkUnary) { // if internal binary leaf 
@@ -308,14 +308,18 @@ public class WAVLTree {
 		   }
 	   }
 	   
+		 decreaseSizesUp(resizeNode); //fix sizes up the tree- opposite of insert updates. note rebalanceNode is deletednode.parent
+		 
+	   
 	   //"pre rebalance"
+	   
+	   
 	   
 	   int preRebalances=0; //don't miss a rebalance count
 	   
 	   if (checkLeaf) { //we actually deleted a leaf- we check if special first rebalance applies
 		   int leafCases = leafDeletionCases(rebalanceNode); 
 		   if (leafCases == 1) {
-			   decreaseSizesUp(resizeNode); //fix sizes up the tree- opposite of insert updates. note rebalanceNode is deleted.parent
 			   return 0; 
 		   }
 		   if (leafCases == 2) {
@@ -326,21 +330,26 @@ public class WAVLTree {
 	   }
 	   
 	   if (checkUnary) {
+			 if(rebalanceNode==null) {
+				 return 0; //TODO why?
+			 }
 		   int unaryNumCases = unaryDeletionCases(rebalanceNode); 
 		   if (unaryNumCases == 1 || unaryNumCases == 2) { // fixed cases 1,2
-			   decreaseSizesUp(resizeNode);
 			   return 0; 
 		   }
 	}
 
 	   
-		 decreaseSizesUp(resizeNode); //fix sizes up the tree- opposite of insert updates. note rebalanceNode is deletednode.parent
 		
 		 
 		 //rebalance
 		 int rebalances = 0+preRebalances; //initial value 1/0- we may have already demoted a leaf
 		 
+		 if(rebalanceNode==null) return rebalances; //if problem already moved up after reaching root- then fixed
+		 
+		 
 		 int caseNum = whichCaseDelete(rebalanceNode);
+		 
 		 while (caseNum != 0) { //tree isn't fixed
 			   switch (caseNum) {
 			   
@@ -348,7 +357,7 @@ public class WAVLTree {
 				rebalanceNode.rank--; // demote z 
 				rebalanceNode = rebalanceNode.parent; 
 				rebalances++; //one promote
-				if (rebalanceNode == root) { //root need not push problem upwards- fixed
+				if (rebalanceNode == root || rebalanceNode==null) { //root need not push problem upwards- fixed
 					caseNum = 0; 
 					break; 
 				}
@@ -369,7 +378,7 @@ public class WAVLTree {
 				
 				rebalances+=2; //double demote
 				
-				if (rebalanceNode == root) { //root need not push problem upwards- fixed
+				if (rebalanceNode == root || rebalanceNode==null) { //root need not push problem upwards- fixed
 					caseNum = 0; 
 					break; 
 				}
