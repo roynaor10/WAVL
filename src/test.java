@@ -25,6 +25,8 @@ public class test {
 			set.add(x); 
 			System.out.println("inserted "+x);
 			wTree.insert(x, Integer.toString(x)); 
+//			wTree.display();
+//			System.out.println("********************************");
 		}
 //        int[] k=new int[] {8,18,15,35,16,43,19};
 //		for (int i = 0; i < k.length; i++) {
@@ -49,11 +51,14 @@ public class test {
 //		System.out.println(wTree.size());
 //		System.out.println(height(wTree.getRoot()));
 //		
+		wTree.display();
 		int i=1;
 		for (int x : set) {
+			System.out.println("********************************");
 			System.out.println("deleted "+x);
 			i++;
 			wTree.delete(x); 
+			wTree.display();
 		}
 		System.out.println(Arrays.toString(wTree.keysToArray()));
 //        int h=0;
@@ -70,7 +75,7 @@ public class test {
 //		wTree.delete(30);
 //		wTree.delete(20);
 //		wTree.delete(25);
-        
+//        wTree.display();
 		
 	
 		
