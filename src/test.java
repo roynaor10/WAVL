@@ -18,9 +18,9 @@ public class test {
 		Random rand = new Random();
         Set<Integer> set = new HashSet<Integer>(); 
         
-        //wTree.insert(-4, "-4"); 
+        wTree.insert(-4, "-4"); 
 		
-		for (int i = 1; i <= 10; i++) {
+		for (int i = 1; i <= 10000; i++) {
 			int x = rand.nextInt(50000); 
 			set.add(x); 
 			System.out.println("inserted "+x);
@@ -51,16 +51,20 @@ public class test {
 //		System.out.println(wTree.size());
 //		System.out.println(height(wTree.getRoot()));
 //		
-		wTree.display();
+//		wTree.display();
 		int i=1;
+		
+		int stop=(set.size()-100);
 		for (int x : set) {
-			System.out.println("********************************");
+//			System.out.println("********************************");
 			System.out.println("deleted "+x);
 			i++;
+			if(i==stop) break;
 			wTree.delete(x); 
-			wTree.display();
+//			wTree.display();
 		}
 		System.out.println(Arrays.toString(wTree.keysToArray()));
+		System.out.println(height(wTree.getRoot()));
 //        int h=0;
 //		h+= wTree.insert(35, "");
 //		h+= wTree.insert(30, "");

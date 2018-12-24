@@ -277,14 +277,8 @@ public class WAVLTree {
 		   checkUnary=isUnary(suc); //update this too
 		   
 		   if(rebalanceNode == deletionNode) {
-			   if(rebalanceNode != root) {
-				   rebalanceNode=rebalanceNode.parent; //edge case if rebalancenode is suc.parent and deleted from tree
+				   rebalanceNode = suc; //edge case if rebalancenode is suc.parent and deleted from tree
 				   resizeNode=rebalanceNode;
-			   }
-			   else {
-				   rebalanceNode = suc; //fixes problem if root==deletion with suc==deletion.right
-				   resizeNode=rebalanceNode;
-			   }
 		   }
 		   
 		   //replace(suc, deletionNode);  TODO not use this?
@@ -314,7 +308,6 @@ public class WAVLTree {
 	   //"pre rebalance"
 	   
 	   
-	   
 	   int preRebalances=0; //don't miss a rebalance count
 	   
 	   if (checkLeaf) { //we actually deleted a leaf- we check if special first rebalance applies
@@ -340,7 +333,6 @@ public class WAVLTree {
 	}
 
 	   
-		
 		 
 		 //rebalance
 		 int rebalances = 0+preRebalances; //initial value 1/0- we may have already demoted a leaf
