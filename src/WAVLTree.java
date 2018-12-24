@@ -60,7 +60,7 @@ public class WAVLTree {
    * if already in tree. returns null if tree is empty.
    * updates sizes "on the way down"
    */
-  public WAVLNode treePosition(int k,WAVLNode searched,boolean updateSizes) { //TODO change to private
+  private WAVLNode treePosition(int k,WAVLNode searched,boolean updateSizes) {
 	  WAVLNode prev = null;
 	  while (searched != null) {
 		 if(updateSizes) searched.size++; //updates sizes on the way
@@ -213,37 +213,8 @@ public class WAVLTree {
 	   if(currentNode.parent.right==currentNode && diff3==2) return 2;
 	   return 3;
    }
-   
-   /*
-    * old code
-   private boolean case1(WAVLNode currentNode) {
-	   int diff1 = currentNode.parent.rank - currentNode.rank; 
-	   int diff2 = currentNode.parent.rank - currentNode.parent.getSibling().rank;
-	   return diff1 == 0 && diff2 == 1;  
-   }
-   
-   private boolean case2(WAVLNode currentNode) {
-	   boolean case2A = false;
-	   boolean case2B = false; 
-	   int diff1 = currentNode.rank - currentNode.left.rank; 
-	   int diff2 = currentNode.rank - currentNode.right.rank; 	   
-	   if (!(diff1 == 1 && diff2 == 2)) { // condition for case 2A
-		   
-	   }
-	   
-	   if (!(diff2 == 2 && diff1 == 1)) { // condition for case 2B
-		   
-	   }
-		   
-		   
-		   return false; 
-	   diff1 = currentNode.parent.rank - currentNode.rank; 
-	   diff2 = currentNode.parent.right.rank - currentNode.parent.rank; 
-	   return diff1 == 0 && diff2 == 2; 
-   }
-   */
 
-   
+   //TODO docs for everything
    /**
    * public int delete(int k)
    *
@@ -267,7 +238,6 @@ public class WAVLTree {
 	   //if not both- binary:we will find succsesor and update correct checker
 	   
 	   
-	   
 	   if (!checkLeaf && !checkUnary) { // if internal binary leaf 
 		   WAVLNode suc = successor(deletionNode); 
 		   rebalanceNode = suc.parent; //find new rebalancenode (NOTE: suc is NOT the root)
@@ -280,8 +250,6 @@ public class WAVLTree {
 				   rebalanceNode = suc; //edge case if rebalancenode is suc.parent and deleted from tree
 				   resizeNode=rebalanceNode;
 		   }
-		   
-		   //replace(suc, deletionNode);  TODO not use this?
 		   
 		   deleteBinary(deletionNode,suc); 
 		   //check cases later using check variables...
@@ -323,16 +291,12 @@ public class WAVLTree {
 	   }
 	   
 	   if (checkUnary) {
-			 if(rebalanceNode==null) {
-				 return 0; //TODO why?
-			 }
 		   int unaryNumCases = unaryDeletionCases(rebalanceNode); 
 		   if (unaryNumCases == 1 || unaryNumCases == 2) { // fixed cases 1,2
 			   return 0; 
 		   }
 	}
 
-	   
 		 
 		 //rebalance
 		 int rebalances = 0+preRebalances; //initial value 1/0- we may have already demoted a leaf
@@ -349,7 +313,7 @@ public class WAVLTree {
 				rebalanceNode.rank--; // demote z 
 				rebalanceNode = rebalanceNode.parent; 
 				rebalances++; //one promote
-				if (rebalanceNode == root || rebalanceNode==null) { //root need not push problem upwards- fixed
+				if ( rebalanceNode==null) { //root need not push problem upwards- fixed
 					caseNum = 0; 
 					break; 
 				}
@@ -370,7 +334,7 @@ public class WAVLTree {
 				
 				rebalances+=2; //double demote
 				
-				if (rebalanceNode == root || rebalanceNode==null) { //root need not push problem upwards- fixed
+				if ( rebalanceNode==null) { //root need not push problem upwards- fixed
 					caseNum = 0; 
 					break; 
 				}
@@ -429,13 +393,6 @@ public class WAVLTree {
 	   return rebalances; 
 	   
       }
-
-
-//TODO replaces node with succsesor for delete- may return deleted's parent for rebalancing
-   private void replace(WAVLNode suc, WAVLNode deletionNode) {
-	   
-
-   }
 
    private void deleteLeaf(WAVLNode deletionNode) {
 	   
@@ -874,23 +831,5 @@ public class WAVLTree {
 		return parent.right;
 	}
 
-       //TODO for now i'll implement double sided-we can easily change later.
-       /*
-       public void setRight(WAVLNode rightnode) {
-    	   this.right=rightnode;
-    	   if (rightnode!=EXT) rightnode.parent=this; //only one EXT node- problematic with parent 
-       }
-       public void setParent(WAVLNode parentnode,boolean isRightNode) {
-    	   this.parent=parentnode; 
-    	   if(this!=root) {
-    		   if(isRightNode) parentnode.right=this;
-    		   else parentnode.left=this;
-    	   }
-       }
-       public void setLeft(WAVLNode leftnode) {
-    	   this.left=leftnode;
-    	   if (leftnode!=EXT) leftnode.parent=this; //only one EXT node- problematic with parent 
-       }
-       */
    }
 }
