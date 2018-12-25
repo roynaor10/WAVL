@@ -778,11 +778,14 @@ public class WAVLTree {
     */   
    public String select(int i) { 
 	   if (i > size() || root == null) {
-		   return "-1"; 
+		   return null; 
 	   }
 	   return selectNode(root, i).getValue(); 
    }
    
+   /**
+    * Implements selection  ith smallest in list recursively (as shown in class)
+    */
    private WAVLNode selectNode(WAVLNode node, int i) {
 	   int r = node.left.size;
 	   if (i == r) {
@@ -855,44 +858,68 @@ public class WAVLTree {
   		 this.value=value;
   	 }
   	 
+	/**
+	 * returns node key
+	 */
   	 public int getKey() {
   		 return this != null ? key : ERROR_INDICTATOR; 
   	 }
   	 
-  	 /*
+  	 /**
   	  * returns value or null if external leaf
   	  */
   	 public String getValue() {
   		 return rank == -1 ? null : value;  
   	 }
   	 
+  	 /**
+  	  * returns left child or null if EXT
+  	  */
   	 public WAVLNode getLeft() {
   		 if(this.left==EXT) return null;
   		 return left; 
   	 }
   	 
+  	 /**
+  	  * returns parent
+  	  */
   	 public WAVLNode getParent( ) {
   		 return parent; 
   	 }
   	 
+  	 /**
+  	  * returns right child or null if EXT
+  	  */
   	 public WAVLNode getRight() {
   		 if(this.right==EXT) return null;
   		 return right; 
   	 }
   	 
+  	 /**
+  	  * returns whether this node is an inner node (not EXT)
+  	  */
   	 public boolean isInnerNode() {
   		 return rank != -1 ? true : false; 
   	 }
 
+  	 /**
+  	  * returns size of subtree with current node at its root
+  	  */
        public int getSubtreeSize() {
       	 return size; 
        }
        
+    	 /**
+    	  * returns nodes rank (-1 for EXT)
+    	  */
        public int getRank() { //to access EXT rank
 		if(this==EXT) return -1;
 		return rank;
 	}
        
+    	 /**
+    	  * returns the sibling of the current node, meaning its parents other child
+    	  */
        public WAVLNode getSibling() {
 		if (this.parent.right==this) { //checks if right child and returns left and vice versa
 			return parent.left;
