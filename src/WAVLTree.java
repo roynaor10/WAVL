@@ -733,7 +733,6 @@ public class WAVLTree {
         * implementation like in class
     */   
    public String select(int i) { 
-	   // return infoToArray()[i]; 
 	   if (i > size() || root == null) {
 		   return "-1"; 
 	   }
