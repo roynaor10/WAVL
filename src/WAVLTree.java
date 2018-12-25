@@ -774,9 +774,28 @@ public class WAVLTree {
     * Example 1: select(1) returns the value of the node with minimal key 
         * Example 2: select(size()) returns the value of the node with maximal key 
         * Example 3: select(2) returns the value 2nd smallest minimal node, i.e the value of the node minimal node's successor  
+        * implementation like in class
     */   
-   public String select(int i) { //    * TODO change? may need to implement in O(log(n))
-	   return infoToArray()[i]; 
+   public String select(int i) { 
+	   if (i > size() || root == null) {
+		   return "-1"; 
+	   }
+	   return selectNode(root, i).getValue(); 
+   }
+   
+   private WAVLNode selectNode(WAVLNode node, int i) {
+	   int r = node.left.size;
+	   if (i == r) {
+		   return node; 
+	   }
+	   else {
+		   if (i < r) {
+			   return selectNode(node.left, i); 
+		   }
+		   else {
+			   return selectNode(node.right, i - r - 1); 
+		   }
+	   }
    }
    
    //TODO delete!!!!
