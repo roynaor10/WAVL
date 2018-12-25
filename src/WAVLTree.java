@@ -3,7 +3,7 @@
  * WAVLTree
  *
  * An implementation of a WAVL Tree.
- * (Haupler, Sen & Tarajan â€˜15)
+ * (Haupler, Sen & Tarajan)
  *
  */
 

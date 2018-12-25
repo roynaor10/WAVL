@@ -54,13 +54,13 @@ public class test {
 //		wTree.display();
 		int i=1;
 		
-		int stop=(set.size());
+		int stop=(set.size()-10);
 		for (int x : set) {
 //			System.out.println("********************************");
 			System.out.println("deleted "+x);
 			System.out.println(wTree.size());
 			i++;
-			//if(i==stop) break;
+			if(i==stop) break;
 			wTree.delete(x); 
 			 //wTree.display();
 //			wTree.display();
@@ -83,7 +83,9 @@ public class test {
 //		wTree.delete(25);
 //        wTree.display();
 		
-	
+	for (int j = 0; j < wTree.size(); j++) {
+		System.out.println(wTree.select(j));
+	}
 		
 
 		//System.out.println(h);
