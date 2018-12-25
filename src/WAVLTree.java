@@ -3,7 +3,7 @@
  * WAVLTree
  *
  * An implementation of a WAVL Tree.
- * (Haupler, Sen & Tarajan â€˜15)
+ * (Haupler, Sen & Tarajan)
  *
  */
 
@@ -778,11 +778,14 @@ public class WAVLTree {
     */   
    public String select(int i) { 
 	   if (i > size() || root == null) {
-		   return "-1"; 
+		   return null; 
 	   }
 	   return selectNode(root, i).getValue(); 
    }
    
+   /**
+    * Implements selection  ith smallest in list recursively (as shown in class)
+    */
    private WAVLNode selectNode(WAVLNode node, int i) {
 	   int r = node.left.size;
 	   if (i == r) {
@@ -797,41 +800,7 @@ public class WAVLTree {
 		   }
 	   }
    }
-   
-   //TODO delete!!!!
-   private static final boolean DISPLAY_SUBTREESIZE = true;	
 
-   public void display() {
-   		display(!DISPLAY_SUBTREESIZE);
-   	}
-
-   	public void display(boolean displayRank) {
-   		final int height = root.rank*2+2, width = (root.getSubtreeSize() + 1) * 12;
-
-   		int len = width * height * 2 + 2;
-   		StringBuilder sb = new StringBuilder(len);
-   		for (int i = 1; i <= len; i++)
-   			sb.append(i < len - 2 && i % width == 0 ? "\n" : ' ');
-
-   		displayR(sb, width / 2, 1, width / 4, width, root, " ", displayRank);
-   		System.out.println(sb);
-   	}
-
-   	private void displayR(StringBuilder sb, int c, int r, int d, int w, WAVLNode n, String edge, boolean displayRank) {
-   		if (n != null) {
-   			displayR(sb, c - d, r + 2, d / 2, w, n.left, " /", displayRank);
-
-   			String s = (displayRank) ? String.valueOf(n.key) + "[" + n.getSubtreeSize() + "]" : String.valueOf(n.key) + "[" + n.rank + "]";
-   			int idx1 = r * w + c - (s.length() + 1) / 2;
-   			int idx2 = idx1 + s.length();
-   			int idx3 = idx1 - w;
-   			if (idx2 < sb.length())
-   				sb.replace(idx1, idx2, s).replace(idx3, idx3 + 2, edge);
-
-   			displayR(sb, c + d, r + 2, d / 2, w, n.right, "\\ ", displayRank);
-   		}
-   	}
-   	//TODO end of delete
    
    /**
     * public class WAVLNode
@@ -855,44 +824,68 @@ public class WAVLTree {
   		 this.value=value;
   	 }
   	 
+	/**
+	 * returns node key
+	 */
   	 public int getKey() {
   		 return this != null ? key : ERROR_INDICTATOR; 
   	 }
   	 
-  	 /*
+  	 /**
   	  * returns value or null if external leaf
   	  */
   	 public String getValue() {
   		 return rank == -1 ? null : value;  
   	 }
   	 
+  	 /**
+  	  * returns left child or null if EXT
+  	  */
   	 public WAVLNode getLeft() {
   		 if(this.left==EXT) return null;
   		 return left; 
   	 }
   	 
-  	 public WAVLNode getParent( ) {
+  	 /**
+  	  * returns parent
+  	  */
+  	 public WAVLNode getParent() {
   		 return parent; 
   	 }
   	 
+  	 /**
+  	  * returns right child or null if EXT
+  	  */
   	 public WAVLNode getRight() {
   		 if(this.right==EXT) return null;
   		 return right; 
   	 }
   	 
+  	 /**
+  	  * returns whether this node is an inner node (not EXT)
+  	  */
   	 public boolean isInnerNode() {
   		 return rank != -1 ? true : false; 
   	 }
 
+  	 /**
+  	  * returns size of subtree with current node at its root
+  	  */
        public int getSubtreeSize() {
       	 return size; 
        }
        
+    	 /**
+    	  * returns nodes rank (-1 for EXT)
+    	  */
        public int getRank() { //to access EXT rank
 		if(this==EXT) return -1;
 		return rank;
 	}
        
+    	 /**
+    	  * returns the sibling of the current node, meaning its parents other child
+    	  */
        public WAVLNode getSibling() {
 		if (this.parent.right==this) { //checks if right child and returns left and vice versa
 			return parent.left;
