@@ -800,41 +800,7 @@ public class WAVLTree {
 		   }
 	   }
    }
-   
-   //TODO delete!!!!
-   private static final boolean DISPLAY_SUBTREESIZE = true;	
 
-   public void display() {
-   		display(!DISPLAY_SUBTREESIZE);
-   	}
-
-   	public void display(boolean displayRank) {
-   		final int height = root.rank*2+2, width = (root.getSubtreeSize() + 1) * 12;
-
-   		int len = width * height * 2 + 2;
-   		StringBuilder sb = new StringBuilder(len);
-   		for (int i = 1; i <= len; i++)
-   			sb.append(i < len - 2 && i % width == 0 ? "\n" : ' ');
-
-   		displayR(sb, width / 2, 1, width / 4, width, root, " ", displayRank);
-   		System.out.println(sb);
-   	}
-
-   	private void displayR(StringBuilder sb, int c, int r, int d, int w, WAVLNode n, String edge, boolean displayRank) {
-   		if (n != null) {
-   			displayR(sb, c - d, r + 2, d / 2, w, n.left, " /", displayRank);
-
-   			String s = (displayRank) ? String.valueOf(n.key) + "[" + n.getSubtreeSize() + "]" : String.valueOf(n.key) + "[" + n.rank + "]";
-   			int idx1 = r * w + c - (s.length() + 1) / 2;
-   			int idx2 = idx1 + s.length();
-   			int idx3 = idx1 - w;
-   			if (idx2 < sb.length())
-   				sb.replace(idx1, idx2, s).replace(idx3, idx3 + 2, edge);
-
-   			displayR(sb, c + d, r + 2, d / 2, w, n.right, "\\ ", displayRank);
-   		}
-   	}
-   	//TODO end of delete
    
    /**
     * public class WAVLNode
@@ -883,7 +849,7 @@ public class WAVLTree {
   	 /**
   	  * returns parent
   	  */
-  	 public WAVLNode getParent( ) {
+  	 public WAVLNode getParent() {
   		 return parent; 
   	 }
   	 
