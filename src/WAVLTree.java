@@ -244,7 +244,7 @@ public class WAVLTree {
 	   
 	   boolean checkLeaf=isLeaf(deletionNode); //pre-saved check if we are deleting leaf or unary
 	   boolean checkUnary=isUnary(deletionNode);
-	   //if not both- binary:we will find succsesor and update correct checker
+	   //if not both- binary:we will find successor and update correct checker
 	   
 	   
 	   if (!checkLeaf && !checkUnary) { // if internal binary leaf 
